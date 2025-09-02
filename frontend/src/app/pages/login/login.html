@@ -1,0 +1,68 @@
+<div class="auth-shell">
+  <div class="auth-card">
+    <!-- FORMULÁRIO (ESQUERDA) -->
+    <section class="panel-left">
+      <h2 class="title">Acesse o Canitech</h2>
+
+      <form class="form" [formGroup]="form" (ngSubmit)="submit()">
+        <label class="field">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M4 6h16a2 2 0 0 1 2 2v.35l-10 5.8-10-5.8V8a2 2 0 0 1 2-2Zm16 4.27v7.73a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7.73l9.39 5.45a1.5 1.5 0 0 0 1.22 0L20 10.27Z"
+              />
+            </svg>
+          </span>
+          <input
+            type="email"
+            formControlName="email"
+            placeholder="Seu e-mail"
+            autocomplete="email"
+          />
+        </label>
+
+        <label class="field">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M17 8h-1V6a4 4 0 1 0-8 0v2H7a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2Zm-6 0V6a2 2 0 1 1 4 0v2h-4Z"
+              />
+            </svg>
+          </span>
+          <input
+            type="password"
+            formControlName="password"
+            placeholder="Sua senha"
+            autocomplete="current-password"
+          />
+        </label>
+
+        <div class="row">
+          <label class="remember">
+            <input type="checkbox" formControlName="remember" />
+            Lembrar acesso
+          </label>
+          <a href="#" class="link" (click)="$event.preventDefault()"
+            >Esqueci minha senha</a
+          >
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+          <span>Entrar</span>
+        </button>
+      </form>
+    </section>
+
+    <!-- PAINEL AZUL (DIREITA) -->
+    <aside class="panel-right">
+      <div class="welcome">
+        <h3>Bem-vindo ao Canitech</h3>
+        <p>
+          Gerencie cães, tutores, serviços, vacinas e hospedagens em um só
+          lugar.
+        </p>
+        <button class="btn btn-ghost">Criar conta</button>
+      </div>
+    </aside>
+  </div>
+</div>
