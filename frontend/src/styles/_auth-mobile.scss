@@ -1,0 +1,101 @@
+.input { font-size: 16px; }
+
+.form-logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+
+  img {
+    display: block;
+    max-width: 70%;
+    height: auto;
+  }
+}
+
+@media (max-width: 960px) {
+  .auth-shell { padding: 16px; }
+
+  .auth-frame {
+    width: 100%;
+    min-height: auto;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .form-card {
+    order: 1;
+    width: 100%;
+    max-width: 480px;
+    justify-self: center;
+    padding: 20px 16px;
+    box-shadow:
+      0 12px 28px rgba(0,0,0,.12),
+      0 1px 0 rgba(0,0,0,.04);
+  }
+
+  .brand-side {
+    order: 2;
+    text-align: center;
+    align-content: start;
+    padding: 16px 8px;
+
+    .logo {
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .hello {
+      font-size: clamp(1.8rem, 6vw, 2.2rem);
+      margin: 6px 0 8px;
+    }
+
+    .subtitle {
+      margin: 6px auto 0;
+      max-width: 34ch;
+    }
+
+    .dots { display: none; }
+  }
+
+  .actions {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .field { gap: 4px; }
+  .form  { gap: 12px; }
+
+  .input {
+    padding: 12px 12px;
+    border-radius: 10px;
+  }
+
+  .password-wrap .eye {
+    right: 8px;
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-shell { padding: 12px; }
+
+  .form-card {
+    padding: 16px 12px;
+    max-width: 420px;
+  }
+
+  .form-logo img { max-width: 64%; }
+
+  .brand-side {
+    padding: 8px 0;
+
+    .hello { font-size: clamp(1.6rem, 7vw, 2rem); }
+    .subtitle { max-width: 30ch; }
+  }
+
+  .actions { gap: 6px; }
+}
+
+.btn { width: 100%; }

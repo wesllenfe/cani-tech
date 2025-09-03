@@ -19,6 +19,18 @@
   position: relative;
 }
 
+.form-logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+
 .brand-side {
   color: #fff;
   display: grid;
@@ -94,25 +106,56 @@
   margin-top: 6px;
 }
 
-.follow {
-  display: grid;
-  gap: 8px;
-  margin-top: 22px;
+.password-wrap {
+  position: relative;
+
+  .eye {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 16px;
+  }
+}
+
+.input {
+  width: 100%;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px 14px;
+  background: #fff;
+  outline: none;
+}
+
+.input.ng-invalid.ng-touched,
+input.ng-invalid.ng-touched {
+  border-color: #ef4444;
+}
+
+.error {
+  color: #ef4444;
+  font-size: 0.82rem;
+}
+
+.hint {
   color: var(--c-muted);
-  font-size: .9rem;
+  font-size: 0.82rem;
+}
 
-  .social {
-    display: flex;
-    gap: 12px;
+.terms {
+  align-items: flex-start;
 
-    a {
-      width: 28px; height: 28px;
-      display: grid; place-items: center;
-      border-radius: 50%;
-      border: 1px solid #e5e7eb;
-      color: var(--c-primary);
-      text-decoration: none;
-    }
+  .checkbox {
+    display: inline-flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  input[type="checkbox"] {
+    margin-top: 3px;
   }
 }
 

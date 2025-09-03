@@ -7,6 +7,11 @@ export const routes: Routes = [
       import('./pages/login/login').then(m => m.LoginComponent),
   },
   {
+    path: 'criar-conta',
+    loadComponent: () =>
+      import('./pages/criar-conta/criar-conta').then(m => m.CriarContaComponent),
+  },
+  {
     path: '',
     pathMatch: 'full',
     redirectTo: 'login',

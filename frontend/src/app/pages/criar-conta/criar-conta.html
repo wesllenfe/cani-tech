@@ -1,0 +1,115 @@
+<div class="auth-shell">
+  <div class="auth-frame">
+    <section class="brand-side">
+      <div class="logo">
+        <img src="assets/images/icon.png" alt="CaniTech logo" width="48" height="48" />
+        <span>CaniTech</span>
+      </div>
+
+      <h1 class="hello">Crie sua conta</h1>
+      <p class="subtitle">
+        Junte-se ao CaniTech para cuidar do seu melhor amigo com tecnologia e carinho.
+      </p>
+
+      <div class="dots" aria-hidden="true"></div>
+    </section>
+
+    <aside class="form-card">
+      <div class="form-logo">
+        <img src="assets/images/canitech-logo.png" alt="CaniTech logo" width="220" height="220" />
+      </div>
+
+      <form class="form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <!-- Nome completo -->
+        <label class="field">
+          <input
+            class="input"
+            type="text"
+            formControlName="name"
+            placeholder="Nome completo"
+            autocomplete="name"
+            aria-label="Nome completo"
+          />
+          <small class="error" *ngIf="showError('name','required')">Informe seu nome.</small>
+          <small class="error" *ngIf="showError('name','minlength')">Mínimo de 3 caracteres.</small>
+        </label>
+
+        <!-- Email -->
+        <label class="field">
+          <input
+            class="input"
+            type="email"
+            formControlName="email"
+            placeholder="Email"
+            autocomplete="email"
+            aria-label="Email"
+          />
+          <small class="error" *ngIf="showError('email','required')">Informe um email.</small>
+          <small class="error" *ngIf="showError('email','email')">Email inválido.</small>
+        </label>
+
+        <!-- Senha -->
+        <label class="field">
+          <div class="password-wrap">
+            <input
+              class="input"
+              [type]="hidePassword ? 'password' : 'text'"
+              formControlName="password"
+              placeholder="Senha"
+              autocomplete="new-password"
+              aria-label="Senha"
+            />
+            <button
+              type="button"
+              class="eye"
+              (click)="hidePassword = !hidePassword"
+              aria-label="Mostrar/ocultar senha"
+            >
+              {{ hidePassword ? '👁️' : '🙈' }}
+            </button>
+          </div>
+          <small class="hint">Mínimo 8 caracteres, com letra e número.</small>
+          <small class="error" *ngIf="showError('password','required')">Informe uma senha.</small>
+          <small class="error" *ngIf="showError('password','minlength')">Mínimo de 8 caracteres.</small>
+          <small class="error" *ngIf="showError('password','pattern')">Use letras e números.</small>
+        </label>
+
+        <!-- Confirmar senha -->
+        <label class="field">
+          <input
+            class="input"
+            [type]="hideConfirm ? 'password' : 'text'"
+            formControlName="confirm"
+            placeholder="Confirmar senha"
+            autocomplete="new-password"
+            aria-label="Confirmar senha"
+          />
+          <small
+            class="error"
+            *ngIf="form.errors?.['passwordMismatch'] && (form.get('confirm')?.touched || form.touched)"
+          >
+            As senhas não coincidem.
+          </small>
+        </label>
+
+        <!-- Termos -->
+        <div class="row terms">
+          <label class="checkbox">
+            <input type="checkbox" formControlName="terms" />
+            <span>
+              Li e aceito os
+              <a href="#" target="_blank" rel="noopener">Termos de Uso</a> e a
+              <a href="#" target="_blank" rel="noopener">Política de Privacidade</a>.
+            </span>
+          </label>
+          <small class="error" *ngIf="showError('terms','required')">Você precisa aceitar os termos.</small>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-primary" type="submit">Criar conta</button>
+          <button class="btn btn-secondary" type="button" (click)="goToLogin()">Já tenho conta</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
