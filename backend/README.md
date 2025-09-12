@@ -27,3 +27,19 @@ Iniciar novamente
 
 Ver logs do banco
 `sudo docker logs laravel_postgres`
+
+Criar migrations
+
+`php artisan make:migration create_nome_da_tabela_table`
+
+Executar migrations
+
+`php artisan migrate
+
+Migrations limpas:
+
+`php artisan migrate:fresh`
+
+Com seeders
+
+`php artisan migrate:fresh --seed``
