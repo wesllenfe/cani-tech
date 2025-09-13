@@ -85,7 +85,7 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user): JsonResponse
     {
-        if ($request->user()->id !== $user->id && $request->user()->role !== 'admin') {
+        if ($request->user()->id !== $user->id) {
             return response()->json([
                 'message' => 'Não autorizado.'
             ], 403);
@@ -110,12 +110,6 @@ class UserController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        if ($request->user()->role !== 'admin') {
-            return response()->json([
-                'message' => 'Não autorizado.'
-            ], 403);
-        }
-
         $users = User::paginate(15);
 
         return response()->json($users);

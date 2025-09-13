@@ -30,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Route::middleware('api')
             ->prefix('api')
-            ->name('api.')  // Optional: adds 'api.' prefix to route names
+            ->name('api.')
             ->group(base_path('routes/api.php'));
 
         Route::middleware('web')
