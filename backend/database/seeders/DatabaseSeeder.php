@@ -18,5 +18,13 @@ class DatabaseSeeder extends Seeder
         $admin->password = Hash::make(env('ADMIN_PASSWORD'));
         $admin->role = 'admin';
         $admin->save();
+
+        $this->call([
+            UserSeeder::class,
+            CategorySeeder::class,
+            AnimalSeeder::class,
+            ExpenseSeeder::class,
+            DonationSeeder::class,
+        ]);
     }
 }
