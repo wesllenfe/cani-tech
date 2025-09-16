@@ -31,6 +31,11 @@ Antes de rodar o projeto, instale as ferramentas abaixo:
 
 ### Backend (API Laravel)
 
+#### Extras:
+<a href="./backend/API.md">Documentação API<a>
+
+<a href="./backend/README.md">Comandos úteis<a>
+
 ```bash
 git clone <url-do-repo>
 cd ./backend
