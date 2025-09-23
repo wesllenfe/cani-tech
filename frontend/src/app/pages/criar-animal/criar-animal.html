@@ -1,0 +1,237 @@
+<div class="dash-shell">
+  <div class="dash-frame">
+    <div class="dash-brand">
+      <div class="logo">
+        <img src="../../../assets/images/canitech-logo.png" alt="CaniTech" width="32" height="32">
+        <span>CaniTech</span>
+      </div>
+      <h1 class="hello">{{ isEditing ? 'Editar Animal' : 'Novo Animal' }}</h1>
+      <p class="subtitle">{{ isEditing ? 'Edite as informações do animal' : 'Cadastre um novo animal no sistema' }}</p>
+      <div class="dots"></div>
+    </div>
+
+    <div class="dash-panel">
+      <div class="toolbar">
+        <button class="btn btn-secondary" (click)="goBack()">
+          <i class="fas fa-arrow-left"></i>
+          Voltar
+        </button>
+      </div>
+
+      <div class="form-card">
+        <form [formGroup]="form" (ngSubmit)="submit()" class="form">
+          <div class="form-row">
+            <div class="field">
+              <label for="name">Nome *</label>
+              <input
+                id="name"
+                type="text"
+                formControlName="name"
+                class="input"
+                placeholder="Digite o nome do animal"
+              />
+              <div class="error" *ngIf="showError('name', 'required')">
+                Nome é obrigatório
+              </div>
+              <div class="error" *ngIf="showError('name', 'minlength')">
+                Nome deve ter pelo menos 2 caracteres
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="breed">Raça</label>
+              <input
+                id="breed"
+                type="text"
+                formControlName="breed"
+                class="input"
+                placeholder="Ex: Vira-lata, Golden Retriever"
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label for="age_months">Idade (meses) *</label>
+              <input
+                id="age_months"
+                type="number"
+                formControlName="age_months"
+                class="input"
+                placeholder="Ex: 12"
+                min="1"
+                max="300"
+              />
+              <div class="error" *ngIf="showError('age_months', 'required')">
+                Idade é obrigatória
+              </div>
+              <div class="error" *ngIf="showError('age_months', 'min')">
+                Idade deve ser pelo menos 1 mês
+              </div>
+              <div class="error" *ngIf="showError('age_months', 'max')">
+                Idade deve ser no máximo 300 meses
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="gender">Sexo *</label>
+              <select id="gender" formControlName="gender" class="input">
+                <option value="">Selecione</option>
+                <option *ngFor="let option of genderOptions" [value]="option.value">
+                  {{ option.label }}
+                </option>
+              </select>
+              <div class="error" *ngIf="showError('gender', 'required')">
+                Sexo é obrigatório
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label for="size">Porte *</label>
+              <select id="size" formControlName="size" class="input">
+                <option value="">Selecione</option>
+                <option *ngFor="let option of sizeOptions" [value]="option.value">
+                  {{ option.label }}
+                </option>
+              </select>
+              <div class="error" *ngIf="showError('size', 'required')">
+                Porte é obrigatório
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="color">Cor *</label>
+              <input
+                id="color"
+                type="text"
+                formControlName="color"
+                class="input"
+                placeholder="Ex: Marrom, Preto, Branco"
+              />
+              <div class="error" *ngIf="showError('color', 'required')">
+                Cor é obrigatória
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label for="weight">Peso (kg)</label>
+              <input
+                id="weight"
+                type="number"
+                formControlName="weight"
+                class="input"
+                placeholder="Ex: 15.5"
+                step="0.1"
+                min="0.1"
+                max="200"
+              />
+              <div class="error" *ngIf="showError('weight', 'min')">
+                Peso deve ser pelo menos 0.1 kg
+              </div>
+              <div class="error" *ngIf="showError('weight', 'max')">
+                Peso deve ser no máximo 200 kg
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="entry_date">Data de Entrada *</label>
+              <input
+                id="entry_date"
+                type="date"
+                formControlName="entry_date"
+                class="input"
+              />
+              <div class="error" *ngIf="showError('entry_date', 'required')">
+                Data de entrada é obrigatória
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="description">Descrição</label>
+            <textarea
+              id="description"
+              formControlName="description"
+              class="input textarea"
+              placeholder="Descreva o animal, personalidade, etc."
+              rows="3"
+            ></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label for="status">Status</label>
+              <select id="status" formControlName="status" class="input">
+                <option *ngFor="let option of statusOptions" [value]="option.value">
+                  {{ option.label }}
+                </option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="photo_url">URL da Foto</label>
+              <input
+                id="photo_url"
+                type="url"
+                formControlName="photo_url"
+                class="input"
+                placeholder="https://exemplo.com/foto.jpg"
+              />
+            </div>
+          </div>
+
+          <div class="checkbox-group">
+            <div class="checkbox-field">
+              <label class="checkbox">
+                <input type="checkbox" formControlName="vaccinated">
+                <span>Vacinado</span>
+              </label>
+            </div>
+
+            <div class="checkbox-field">
+              <label class="checkbox">
+                <input type="checkbox" formControlName="neutered">
+                <span>Castrado</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="medical_notes">Observações Médicas</label>
+            <textarea
+              id="medical_notes"
+              formControlName="medical_notes"
+              class="input textarea"
+              placeholder="Informações sobre saúde, tratamentos, etc."
+              rows="3"
+            ></textarea>
+          </div>
+
+          <div class="actions">
+            <button type="button" class="btn btn-secondary" (click)="goBack()">
+              Cancelar
+            </button>
+            <button 
+              type="submit" 
+              class="btn btn-primary" 
+              [disabled]="form.invalid || loading"
+            >
+              <i class="fas fa-save" *ngIf="!loading"></i>
+              <i class="fas fa-spinner fa-spin" *ngIf="loading"></i>
+              {{ loading ? (isEditing ? 'Atualizando...' : 'Criando...') : (isEditing ? 'Atualizar Animal' : 'Criar Animal') }}
+            </button>
+          </div>
+
+          <div class="api-error" *ngIf="apiError">
+            <i class="fas fa-exclamation-triangle"></i>
+            {{ apiError }}
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

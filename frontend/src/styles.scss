@@ -37,12 +37,9 @@ body {
 }
 
 @mixin soft-input() {
-  border: 2px solid var(--c-stroke);
   border-radius: var(--radius-sm);
   background: #fff;
-  transition: border 0.18s, box-shadow 0.18s;
   &:focus {
-    border-color: var(--c-primary);
     box-shadow: 0 0 0 3px var(--c-focus);
     outline: none;
   }

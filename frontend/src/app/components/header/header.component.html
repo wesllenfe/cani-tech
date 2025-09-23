@@ -1,0 +1,79 @@
+<header class="header">
+  <div class="header-content">
+    <div class="logo" (click)="navigateTo('/')">
+      <img src="assets/images/canitech-logo.png" alt="CaniTech" width="40" height="40">
+      <span>CaniTech</span>
+    </div>
+
+    <nav class="nav">
+      <button class="btn btn-outline" (click)="navigateTo('/doacao-publica')">Doar</button>
+
+      <ng-container *ngIf="!isAuthenticated">
+        <button class="btn btn-primary" (click)="goToLogin()">Entrar</button>
+      </ng-container>
+
+      <ng-container *ngIf="isAuthenticated">
+        <div class="user-menu">
+          <button class="btn btn-primary" (click)="navigateTo('/dashboard')">Dashboard</button>
+          <div class="dropdown" 
+               (mouseenter)="showDropdown = true" 
+               (mouseleave)="onDropdownMouseLeave($event)">
+            <button class="btn btn-outline" type="button">
+              <i class="fas fa-user"></i>
+              Minha Conta
+            </button>
+            <div class="dropdown-menu" 
+                 [class.show]="showDropdown"
+                 (mouseenter)="showDropdown = true"
+                 (mouseleave)="onDropdownMouseLeave($event)">
+              <a class="dropdown-item" (click)="goToProfile()">
+                <i class="fas fa-user"></i>
+                Perfil
+              </a>
+              <a class="dropdown-item" (click)="navigateTo('/my-adoptions')">
+                <i class="fas fa-heart"></i>
+                Minhas Adoções
+              </a>
+              <div class="dropdown-divider"></div>
+              <!-- Opções de Admin/Cuidador -->
+              <ng-container *ngIf="userRole === 'admin' || userRole === 'caregiver'">
+                <a class="dropdown-item" (click)="navigateTo('/animais-admin')">
+                  <i class="fas fa-paw"></i>
+                  Gerenciar Animais
+                </a>
+              </ng-container>
+              <!-- Opções apenas de Admin -->
+              <ng-container *ngIf="userRole === 'admin'">
+                <a class="dropdown-item" (click)="navigateTo('/categorias')">
+                  <i class="fas fa-tags"></i>
+                  Categorias
+                </a>
+                <a class="dropdown-item" (click)="navigateTo('/despesas')">
+                  <i class="fas fa-receipt"></i>
+                  Despesas
+                </a>
+                <a class="dropdown-item" (click)="navigateTo('/doacoes-admin')">
+                  <i class="fas fa-donate"></i>
+                  Doações
+                </a>
+                <a class="dropdown-item" (click)="navigateTo('/usuarios')">
+                  <i class="fas fa-users"></i>
+                  Usuários
+                </a>
+                <a class="dropdown-item" (click)="navigateTo('/relatorios')">
+                  <i class="fas fa-chart-bar"></i>
+                  Relatórios
+                </a>
+              </ng-container>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item text-danger" (click)="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                Sair
+              </a>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </nav>
+  </div>
+</header>

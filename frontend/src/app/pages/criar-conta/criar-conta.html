@@ -48,6 +48,32 @@
           <small class="error" *ngIf="showError('email','email')">Email inválido.</small>
         </label>
 
+        <!-- CPF -->
+        <label class="field">
+          <input
+            class="input"
+            type="text"
+            formControlName="cpf"
+            placeholder="CPF (apenas números)"
+            autocomplete="off"
+            aria-label="CPF"
+            maxlength="11"
+          />
+          <small class="error" *ngIf="showError('cpf','required')">Informe seu CPF.</small>
+          <small class="error" *ngIf="showError('cpf','pattern')">CPF deve ter 11 dígitos.</small>
+        </label>
+
+        <!-- Data de Nascimento -->
+        <label class="field">
+          <input
+            class="input"
+            type="date"
+            formControlName="birth_date"
+            aria-label="Data de nascimento"
+          />
+          <small class="error" *ngIf="showError('birth_date','required')">Informe sua data de nascimento.</small>
+        </label>
+
         <!-- Senha -->
         <label class="field">
           <div class="password-wrap">

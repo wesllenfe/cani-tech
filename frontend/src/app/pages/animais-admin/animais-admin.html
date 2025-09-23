@@ -1,0 +1,103 @@
+<div class="dash-shell">
+  <app-header></app-header>
+  <div class="dash-frame">
+    <div class="dash-brand">
+      <div class="logo">
+        <img src="../../../assets/images/canitech-logo.png" alt="CaniTech" width="32" height="32">
+        <span>CaniTech</span>
+      </div>
+      <h1 class="hello">Gestão de Animais</h1>
+      <p class="subtitle">Gerencie todos os animais do canil</p>
+      <div class="dots"></div>
+    </div>
+
+    <div class="dash-panel">
+      <div class="toolbar">
+        <button class="btn btn-secondary" (click)="goBack()">
+          <i class="fas fa-arrow-left"></i>
+          Voltar
+        </button>
+        
+        <div class="search-wrapper">
+          <i class="fas fa-search search-icon"></i>
+          <input
+            type="text"
+            [formControl]="qCtrl"
+            class="input search"
+            placeholder="Buscar por nome, raça..."
+          />
+        </div>
+
+        <select [formControl]="statusCtrl" class="input select-filter" (change)="onStatusChange($event)">
+          <option value="">Todos os status</option>
+          <option value="available">Disponível</option>
+          <option value="adopted">Adotado</option>
+          <option value="under_treatment">Em Tratamento</option>
+          <option value="unavailable">Indisponível</option>
+        </select>
+
+        <button class="btn btn-primary" (click)="criarAnimal()">
+          <i class="fas fa-plus"></i>
+          Novo Animal
+        </button>
+      </div>
+
+      <div class="stats">
+        <div class="stat-card">
+          <i class="fas fa-paw stat-icon"></i>
+          <div class="stat-content">
+            <div class="label">Total de Animais</div>
+            <div class="value">{{ animals.length }}</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <i class="fas fa-heart stat-icon"></i>
+          <div class="stat-content">
+            <div class="label">Disponíveis</div>
+            <div class="value">{{ getAvailableCount() }}</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <i class="fas fa-home stat-icon"></i>
+          <div class="stat-content">
+            <div class="label">Adotados</div>
+            <div class="value">{{ getAdoptedCount() }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="loading" *ngIf="loading">
+          <i class="fas fa-spinner fa-spin"></i>
+          <p>Carregando animais...</p>
+        </div>
+
+        <div class="api-error" *ngIf="error && !loading">
+          <i class="fas fa-exclamation-triangle"></i>
+          <p>{{ error }}</p>
+        </div>
+
+        <div class="empty" *ngIf="!loading && !error && animals.length === 0">
+          <i class="fas fa-paw"></i>
+          <p>Nenhum animal encontrado</p>
+        </div>
+
+        <div class="grid-list" *ngIf="!loading && !error && animals.length > 0">
+          <div class="animal-card-admin" *ngFor="let animal of animals">
+            <app-animal-card [animal]="animal" (click)="verDetalhes(animal)"></app-animal-card>
+            <div class="card-actions">
+              <button class="btn btn-sm btn-secondary" (click)="editarAnimal(animal)">
+                <i class="fas fa-edit"></i>
+                Editar
+              </button>
+              <button class="btn btn-sm btn-primary" (click)="verDetalhes(animal)">
+                <i class="fas fa-eye"></i>
+                Ver
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

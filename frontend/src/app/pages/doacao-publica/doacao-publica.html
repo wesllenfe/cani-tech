@@ -1,0 +1,150 @@
+<div class="auth-shell">
+  <div class="auth-frame">
+    <div class="brand-side">
+      <div class="logo">
+        <img src="../../../assets/images/canitech-logo.png" alt="CaniTech" width="32" height="32">
+        <span>CaniTech</span>
+      </div>
+      <h1 class="hello">Faça uma Doação</h1>
+      <p class="subtitle">Sua contribuição faz a diferença na vida dos nossos animais. Ajude-nos a continuar cuidando deles com amor e dedicação.</p>
+      <div class="dots"></div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-logo">
+        <img src="../../../assets/images/canitech-logo.png" alt="CaniTech" width="120" height="120">
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="submit()" class="form">
+        <div class="field">
+          <label for="category_id">Categoria da Doação *</label>
+          <select id="category_id" formControlName="category_id" class="input">
+            <option value="">Selecione uma categoria</option>
+            <option *ngFor="let category of categories" [value]="category.id">
+              {{ category.name }}
+            </option>
+          </select>
+          <div class="error" *ngIf="showError('category_id', 'required')">
+            Categoria é obrigatória
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="title">Título da Doação *</label>
+          <input
+            id="title"
+            type="text"
+            formControlName="title"
+            class="input"
+            placeholder="Ex: Doação de ração para cães"
+          />
+          <div class="error" *ngIf="showError('title', 'required')">
+            Título é obrigatório
+          </div>
+          <div class="error" *ngIf="showError('title', 'minlength')">
+            Título deve ter pelo menos 3 caracteres
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="amount">Valor da Doação (R$) *</label>
+          <input
+            id="amount"
+            type="number"
+            formControlName="amount"
+            class="input"
+            placeholder="0.00"
+            step="0.01"
+            min="0.01"
+          />
+          <div class="error" *ngIf="showError('amount', 'required')">
+            Valor é obrigatório
+          </div>
+          <div class="error" *ngIf="showError('amount', 'min')">
+            Valor deve ser maior que zero
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="donor_name">Seu Nome *</label>
+          <input
+            id="donor_name"
+            type="text"
+            formControlName="donor_name"
+            class="input"
+            placeholder="Digite seu nome completo"
+          />
+          <div class="error" *ngIf="showError('donor_name', 'required')">
+            Nome é obrigatório
+          </div>
+          <div class="error" *ngIf="showError('donor_name', 'minlength')">
+            Nome deve ter pelo menos 3 caracteres
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="donor_email">Seu E-mail</label>
+          <input
+            id="donor_email"
+            type="email"
+            formControlName="donor_email"
+            class="input"
+            placeholder="seu@email.com"
+          />
+          <div class="error" *ngIf="showError('donor_email', 'email')">
+            E-mail inválido
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="date">Data da Doação *</label>
+          <input
+            id="date"
+            type="date"
+            formControlName="date"
+            class="input"
+          />
+          <div class="error" *ngIf="showError('date', 'required')">
+            Data é obrigatória
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="description">Descrição (opcional)</label>
+          <textarea
+            id="description"
+            formControlName="description"
+            class="input textarea"
+            placeholder="Descreva sua doação ou deixe uma mensagem"
+            rows="3"
+          ></textarea>
+        </div>
+
+        <button 
+          type="submit" 
+          class="btn btn-primary" 
+          [disabled]="form.invalid || submitting"
+        >
+          <i class="fas fa-heart" *ngIf="!submitting"></i>
+          <i class="fas fa-spinner fa-spin" *ngIf="submitting"></i>
+          {{ submitting ? 'Registrando...' : 'Registrar Doação' }}
+        </button>
+
+        <div class="api-error" *ngIf="apiError">
+          <i class="fas fa-exclamation-triangle"></i>
+          {{ apiError }}
+        </div>
+
+        <div class="success-message" *ngIf="successMessage">
+          <i class="fas fa-check-circle"></i>
+          {{ successMessage }}
+        </div>
+      </form>
+
+      <div class="follow">
+        <p>Já tem uma conta? <a href="#" (click)="goToLogin()" class="link">Faça login</a></p>
+        <p>Não tem conta? <a href="#" (click)="goToRegister()" class="link">Crie uma conta</a></p>
+      </div>
+    </div>
+  </div>
+</div>

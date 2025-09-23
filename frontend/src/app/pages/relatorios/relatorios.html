@@ -1,0 +1,212 @@
+<div class="dash-shell">
+  <div class="dash-frame">
+    <div class="dash-brand">
+      <div class="logo">
+        <img src="../../../assets/images/canitech-logo.png" alt="CaniTech" width="32" height="32">
+        <span>CaniTech</span>
+      </div>
+      <h1 class="hello">Relatórios</h1>
+      <p class="subtitle">Visualize as estatísticas financeiras e operacionais</p>
+      <div class="dots"></div>
+    </div>
+
+    <div class="dash-panel">
+      <div class="toolbar">
+        <button class="btn btn-secondary" (click)="goBack()">
+          <i class="fas fa-arrow-left"></i>
+          Voltar
+        </button>
+      </div>
+
+      <div class="loading" *ngIf="loading">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Carregando relatórios...</p>
+      </div>
+
+      <div class="api-error" *ngIf="error && !loading">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p>{{ error }}</p>
+      </div>
+
+      <div class="reports-content" *ngIf="!loading && !error && financialSummary">
+        <!-- Resumo Financeiro Geral -->
+        <section class="financial-overview">
+          <h2 class="section-title">
+            <i class="fas fa-chart-pie"></i>
+            Resumo Financeiro Geral
+          </h2>
+          
+          <div class="stats-grid">
+            <div class="stat-card donations">
+              <div class="stat-icon">
+                <i class="fas fa-heart"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value">{{ formatCurrency(financialSummary.totalDonations) }}</div>
+                <div class="stat-label">Total em Doações</div>
+                <div class="stat-count">{{ financialSummary.donationsCount }} doações</div>
+              </div>
+            </div>
+
+            <div class="stat-card expenses">
+              <div class="stat-icon">
+                <i class="fas fa-receipt"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value">{{ formatCurrency(financialSummary.totalExpenses) }}</div>
+                <div class="stat-label">Total em Despesas</div>
+                <div class="stat-count">{{ financialSummary.expensesCount }} despesas</div>
+              </div>
+            </div>
+
+            <div class="stat-card balance" [class]="getBalanceClass()">
+              <div class="stat-icon">
+                <i class="fas fa-balance-scale"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value">{{ formatCurrency(financialSummary.balance) }}</div>
+                <div class="stat-label">Saldo Atual</div>
+                <div class="stat-count">
+                  {{ financialSummary.balance >= 0 ? 'Superávit' : 'Déficit' }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Resumo do Mês Atual -->
+        <section class="monthly-overview">
+          <h2 class="section-title">
+            <i class="fas fa-calendar-alt"></i>
+            {{ getCurrentMonthName() }} {{ currentYear }}
+          </h2>
+          
+          <div class="monthly-stats">
+            <div class="monthly-stat">
+              <span class="monthly-label">Doações</span>
+              <span class="monthly-value donations">{{ formatCurrency(financialSummary.currentMonth.donations) }}</span>
+            </div>
+            <div class="monthly-stat">
+              <span class="monthly-label">Despesas</span>
+              <span class="monthly-value expenses">{{ formatCurrency(financialSummary.currentMonth.expenses) }}</span>
+            </div>
+            <div class="monthly-stat">
+              <span class="monthly-label">Saldo</span>
+              <span class="monthly-value" [class]="financialSummary.currentMonth.balance >= 0 ? 'positive' : 'negative'">
+                {{ formatCurrency(financialSummary.currentMonth.balance) }}
+              </span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Categorias de Doações e Despesas -->
+        <div class="categories-overview">
+          <div class="category-section">
+            <h2 class="section-title">
+              <i class="fas fa-heart"></i>
+              Doações por Categoria
+            </h2>
+            
+            <div class="category-list" *ngIf="categoryDonations.length > 0; else noDonations">
+              <div class="category-item" *ngFor="let item of categoryDonations">
+                <div class="category-info">
+                  <span class="category-name">{{ item.category }}</span>
+                  <span class="category-count">{{ item.count }} doações</span>
+                </div>
+                <div class="category-amount donations">{{ formatCurrency(item.total) }}</div>
+              </div>
+            </div>
+            
+            <ng-template #noDonations>
+              <div class="empty-state">
+                <i class="fas fa-heart"></i>
+                <p>Nenhuma doação registrada</p>
+              </div>
+            </ng-template>
+          </div>
+
+          <div class="category-section">
+            <h2 class="section-title">
+              <i class="fas fa-receipt"></i>
+              Despesas por Categoria
+            </h2>
+            
+            <div class="category-list" *ngIf="categoryExpenses.length > 0; else noExpenses">
+              <div class="category-item" *ngFor="let item of categoryExpenses">
+                <div class="category-info">
+                  <span class="category-name">{{ item.category }}</span>
+                  <span class="category-count">{{ item.count }} despesas</span>
+                </div>
+                <div class="category-amount expenses">{{ formatCurrency(item.total) }}</div>
+              </div>
+            </div>
+            
+            <ng-template #noExpenses>
+              <div class="empty-state">
+                <i class="fas fa-receipt"></i>
+                <p>Nenhuma despesa registrada</p>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+
+        <!-- Atividades Recentes -->
+        <div class="recent-activities">
+          <div class="activity-section">
+            <h2 class="section-title">
+              <i class="fas fa-clock"></i>
+              Doações Recentes
+            </h2>
+            
+            <div class="activity-list" *ngIf="recentDonations.length > 0; else noRecentDonations">
+              <div class="activity-item" *ngFor="let donation of recentDonations">
+                <div class="activity-info">
+                  <div class="activity-title">{{ donation.title }}</div>
+                  <div class="activity-meta">
+                    <span class="activity-donor">{{ donation.donor_name }}</span>
+                    <span class="activity-date">{{ formatDate(donation.date) }}</span>
+                  </div>
+                </div>
+                <div class="activity-amount donations">{{ formatCurrency(donation.amount) }}</div>
+              </div>
+            </div>
+            
+            <ng-template #noRecentDonations>
+              <div class="empty-state">
+                <i class="fas fa-heart"></i>
+                <p>Nenhuma doação recente</p>
+              </div>
+            </ng-template>
+          </div>
+
+          <div class="activity-section">
+            <h2 class="section-title">
+              <i class="fas fa-clock"></i>
+              Despesas Recentes
+            </h2>
+            
+            <div class="activity-list" *ngIf="recentExpenses.length > 0; else noRecentExpenses">
+              <div class="activity-item" *ngFor="let expense of recentExpenses">
+                <div class="activity-info">
+                  <div class="activity-title">{{ expense.title }}</div>
+                  <div class="activity-meta">
+                    <span class="activity-user">{{ expense.user?.name || 'Sistema' }}</span>
+                    <span class="activity-date">{{ formatDate(expense.date) }}</span>
+                  </div>
+                </div>
+                <div class="activity-amount expenses">{{ formatCurrency(expense.amount) }}</div>
+              </div>
+            </div>
+            
+            <ng-template #noRecentExpenses>
+              <div class="empty-state">
+                <i class="fas fa-receipt"></i>
+                <p>Nenhuma despesa recente</p>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

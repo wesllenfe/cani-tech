@@ -1,0 +1,214 @@
+<div class="dash-shell">
+  <div class="dash-frame">
+    <div class="dash-brand">
+      <div class="logo">
+        <img src="../../../assets/images/canitech-logo.png" alt="CaniTech" width="32" height="32">
+        <span>CaniTech</span>
+      </div>
+      <h1 class="hello">Doações</h1>
+      <p class="subtitle">Gerencie as doações recebidas</p>
+      <div class="dots"></div>
+    </div>
+
+    <div class="dash-panel">
+      <div class="toolbar">
+        <button class="btn btn-secondary" (click)="goBack()">
+          <i class="fas fa-arrow-left"></i>
+          Voltar
+        </button>
+        
+        <button class="btn btn-primary" (click)="toggleForm()">
+          <i class="fas fa-plus"></i>
+          {{ showForm ? 'Cancelar' : 'Nova Doação' }}
+        </button>
+      </div>
+
+      <div class="form-card" *ngIf="showForm">
+        <h3>{{ editingDonation ? 'Editar Doação' : 'Nova Doação' }}</h3>
+        <form [formGroup]="form" (ngSubmit)="submit()" class="form">
+          <div class="form-row">
+            <div class="field">
+              <label for="category_id">Categoria *</label>
+              <select id="category_id" formControlName="category_id" class="input">
+                <option value="">Selecione uma categoria</option>
+                <option *ngFor="let category of categories" [value]="category.id">
+                  {{ category.name }}
+                </option>
+              </select>
+              <div class="error" *ngIf="showError('category_id', 'required')">
+                Categoria é obrigatória
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="title">Título *</label>
+              <input
+                id="title"
+                type="text"
+                formControlName="title"
+                class="input"
+                placeholder="Ex: Doação de ração"
+              />
+              <div class="error" *ngIf="showError('title', 'required')">
+                Título é obrigatório
+              </div>
+              <div class="error" *ngIf="showError('title', 'minlength')">
+                Título deve ter pelo menos 3 caracteres
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label for="amount">Valor (R$) *</label>
+              <input
+                id="amount"
+                type="number"
+                formControlName="amount"
+                class="input"
+                placeholder="0.00"
+                step="0.01"
+                min="0.01"
+              />
+              <div class="error" *ngIf="showError('amount', 'required')">
+                Valor é obrigatório
+              </div>
+              <div class="error" *ngIf="showError('amount', 'min')">
+                Valor deve ser maior que zero
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="date">Data *</label>
+              <input
+                id="date"
+                type="date"
+                formControlName="date"
+                class="input"
+              />
+              <div class="error" *ngIf="showError('date', 'required')">
+                Data é obrigatória
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label for="donor_name">Nome do Doador *</label>
+              <input
+                id="donor_name"
+                type="text"
+                formControlName="donor_name"
+                class="input"
+                placeholder="Nome completo do doador"
+              />
+              <div class="error" *ngIf="showError('donor_name', 'required')">
+                Nome do doador é obrigatório
+              </div>
+              <div class="error" *ngIf="showError('donor_name', 'minlength')">
+                Nome deve ter pelo menos 3 caracteres
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="donor_email">E-mail do Doador</label>
+              <input
+                id="donor_email"
+                type="email"
+                formControlName="donor_email"
+                class="input"
+                placeholder="email@exemplo.com"
+              />
+              <div class="error" *ngIf="showError('donor_email', 'email')">
+                E-mail inválido
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="description">Descrição</label>
+            <textarea
+              id="description"
+              formControlName="description"
+              class="input textarea"
+              placeholder="Descreva a doação"
+              rows="3"
+            ></textarea>
+          </div>
+
+          <div class="actions">
+            <button type="button" class="btn btn-secondary" (click)="toggleForm()">
+              Cancelar
+            </button>
+            <button 
+              type="submit" 
+              class="btn btn-primary" 
+              [disabled]="form.invalid || loading"
+            >
+              <i class="fas fa-save" *ngIf="!loading"></i>
+              <i class="fas fa-spinner fa-spin" *ngIf="loading"></i>
+              {{ loading ? 'Salvando...' : (editingDonation ? 'Atualizar' : 'Criar') }}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="donations-list">
+        <div class="loading" *ngIf="loading && !showForm">
+          <i class="fas fa-spinner fa-spin"></i>
+          <p>Carregando doações...</p>
+        </div>
+
+        <div class="api-error" *ngIf="error && !loading">
+          <i class="fas fa-exclamation-triangle"></i>
+          <p>{{ error }}</p>
+        </div>
+
+        <div class="empty" *ngIf="!loading && !error && donations.length === 0">
+          <i class="fas fa-heart"></i>
+          <p>Nenhuma doação encontrada</p>
+        </div>
+
+        <div class="donations-grid" *ngIf="!loading && !error && donations.length > 0">
+          <div class="donation-card" *ngFor="let donation of donations">
+            <div class="donation-header">
+              <h4>{{ donation.title }}</h4>
+              <span class="amount">{{ formatCurrency(donation.amount) }}</span>
+            </div>
+            
+            <div class="donation-meta">
+              <span class="category">{{ donation.category.name }}</span>
+              <span class="date">{{ formatDate(donation.date) }}</span>
+            </div>
+            
+            <p class="donation-description" *ngIf="donation.description">
+              {{ donation.description }}
+            </p>
+            
+            <div class="donation-footer">
+              <span class="donor">
+                <i class="fas fa-user"></i>
+                {{ donation.donor_name }}
+              </span>
+              <span class="donor-email" *ngIf="donation.donor_email">
+                <i class="fas fa-envelope"></i>
+                {{ donation.donor_email }}
+              </span>
+            </div>
+            
+            <div class="donation-actions">
+              <button class="btn btn-sm btn-secondary" (click)="editDonation(donation)">
+                <i class="fas fa-edit"></i>
+                Editar
+              </button>
+              <button class="btn btn-sm btn-danger" (click)="deleteDonation(donation)">
+                <i class="fas fa-trash"></i>
+                Excluir
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

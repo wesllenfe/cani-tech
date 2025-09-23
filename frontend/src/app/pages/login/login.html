@@ -8,8 +8,7 @@
 
       <h1 class="hello">Olá,<br />Bem vindo!</h1>
       <p class="subtitle">
-        Bem-vindo ao CaniTech — Cuidando do seu melhor amigo com tecnologia e
-        carinho
+        Bem-vindo ao CaniTech — Cuidando do seu melhor amigo com tecnologia e carinho
       </p>
 
       <div class="dots" aria-hidden="true"></div>
@@ -17,7 +16,7 @@
 
     <aside class="form-card">
       <div class="form-logo">
-       <img src="assets/images/canitech-logo.png" alt="CaniTech logo" width="256" height="256" />
+        <img src="assets/images/canitech-logo.png" alt="CaniTech logo" width="256" height="256" />
       </div>
 
       <form class="form" [formGroup]="form" (ngSubmit)="submit()">
@@ -29,6 +28,10 @@
             placeholder="Email"
             autocomplete="email"
           />
+          <div class="error" *ngIf="form.get('email')?.touched && form.get('email')?.invalid">
+            <small *ngIf="form.get('email')?.errors?.['required']">Email é obrigatório.</small>
+            <small *ngIf="form.get('email')?.errors?.['email']">Email inválido.</small>
+          </div>
         </label>
 
         <label class="field">
@@ -39,11 +42,23 @@
             placeholder="Senha"
             autocomplete="current-password"
           />
+          <div class="error" *ngIf="form.get('password')?.touched && form.get('password')?.invalid">
+            <small>Senha é obrigatória.</small>
+          </div>
         </label>
 
+        <div class="api-error" *ngIf="apiError">
+          <small>{{ apiError }}</small>
+        </div>
+
         <div class="actions">
-          <button class="btn btn-primary" type="submit">Entrar</button>
-          <button class="btn btn-secondary" type="button " (click)="goToRegister()">Criar conta</button>
+          <button class="btn btn-primary" type="submit" [disabled]="loading">
+            <span *ngIf="!loading">Entrar</span>
+            <span *ngIf="loading">Entrando...</span>
+          </button>
+          <button class="btn btn-secondary" type="button" (click)="goToRegister()" [disabled]="loading">
+            Criar conta
+          </button>
         </div>
       </form>
     </aside>

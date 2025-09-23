@@ -1,0 +1,78 @@
+<div class="dash-shell">
+  <app-header></app-header>
+  <div class="dash-content">
+    <div class="dash-frame">
+    <section class="dash-brand">
+      <h1 class="hello">Dashboard</h1>
+      <p class="subtitle">Visão geral dos animais disponíveis, adotados e em tratamento</p>
+
+      <div class="dots" aria-hidden="true"></div>
+    </section>
+
+    <aside class="dash-panel">
+      <div class="toolbar">
+        <input class="input search" placeholder="Buscar por nome, raça..." [formControl]="qCtrl" />
+        <select class="input" [formControl]="statusCtrl">
+          <option value="">Todos os status</option>
+          <option value="available">Disponível</option>
+          <option value="adopted">Adotado</option>
+          <option value="under_treatment">Em tratamento</option>
+          <option value="unavailable">Indisponível</option>
+        </select>
+      </div>
+
+      <section class="stats" *ngIf="stats">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-paw"></i>
+          </div>
+          <div class="stat-content">
+            <div class="value">{{ stats.total_animals }}</div>
+            <div class="label">Total de Animais</div>
+          </div>
+        </div>
+        <div class="stat-card available">
+          <div class="stat-icon">
+            <i class="fas fa-heart"></i>
+          </div>
+          <div class="stat-content">
+            <div class="value">{{ stats.available }}</div>
+            <div class="label">Disponíveis</div>
+          </div>
+        </div>
+        <div class="stat-card adopted">
+          <div class="stat-icon">
+            <i class="fas fa-home"></i>
+          </div>
+          <div class="stat-content">
+            <div class="value">{{ stats.adopted }}</div>
+            <div class="label">Adotados</div>
+          </div>
+        </div>
+        <div class="stat-card treatment">
+          <div class="stat-icon">
+            <i class="fas fa-stethoscope"></i>
+          </div>
+          <div class="stat-content">
+            <div class="value">{{ stats.under_treatment }}</div>
+            <div class="label">Em Tratamento</div>
+          </div>
+        </div>
+      </section>
+
+      <main class="grid">
+        <div *ngIf="loading" class="loading">Carregando animais...</div>
+        <div *ngIf="error" class="api-error"><small>{{ error }}</small></div>
+
+        <div class="grid-list">
+          <app-animal-card *ngFor="let a of animals" [animal]="a"></app-animal-card>
+        </div>
+
+        <div *ngIf="animals.length === 0 && !loading" class="empty">
+          Nenhum animal encontrado.
+        </div>
+      </main>
+    </aside>
+    </div>
+  </div>
+</div>

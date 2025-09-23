@@ -1,0 +1,40 @@
+<article class="animal-card" role="article">
+  <div class="media">
+    <img [src]="animal.photo_url || fallback" [alt]="animal.name" />
+    <div class="status" [attr.data-status]="animal.status">
+      {{ animal.status | statusLabel }}
+    </div>
+    <div class="age-badge">{{ animal.age_months | ageLabel }}</div>
+  </div>
+
+  <div class="body">
+    <div class="header-row">
+      <div>
+        <h3 class="name">{{ animal.name }}</h3>
+        <p class="meta">
+          <span *ngIf="animal.breed">{{ animal.breed }} • </span>
+          <span
+            >{{ animal.size | titlecase }} •
+            {{ animal.gender === 'male' ? 'Macho' : 'Fêmea' }}</span
+          >
+        </p>
+      </div>
+    </div>
+
+    <p class="desc" *ngIf="animal.description">{{ animal.description }}</p>
+
+    <div class="actions">
+      <button class="btn btn-primary" (click)="view()">Ver detalhes</button>
+
+      <button
+        class="btn"
+        [class.btn-secondary]="animal.status === 'available'"
+        [class.btn-disabled]="animal.status !== 'available'"
+        [disabled]="animal.status !== 'available'"
+        (click)="handleAdoptionClick()"
+      >
+        {{ getAdoptionButtonText() }}
+      </button>
+    </div>
+  </div>
+</article>

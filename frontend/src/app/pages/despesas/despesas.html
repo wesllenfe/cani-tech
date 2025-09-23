@@ -1,0 +1,174 @@
+<div class="dash-shell">
+  <div class="dash-frame">
+    <div class="dash-brand">
+      <div class="logo">
+        <img src="../../../assets/images/canitech-logo.png" alt="CaniTech" width="32" height="32">
+        <span>CaniTech</span>
+      </div>
+      <h1 class="hello">Despesas</h1>
+      <p class="subtitle">Gerencie as despesas do canil</p>
+      <div class="dots"></div>
+    </div>
+
+    <div class="dash-panel">
+      <div class="toolbar">
+        <button class="btn btn-secondary" (click)="goBack()">
+          <i class="fas fa-arrow-left"></i>
+          Voltar
+        </button>
+        
+        <button class="btn btn-primary" (click)="toggleForm()">
+          <i class="fas fa-plus"></i>
+          {{ showForm ? 'Cancelar' : 'Nova Despesa' }}
+        </button>
+      </div>
+
+      <div class="form-card" *ngIf="showForm">
+        <h3>{{ editingExpense ? 'Editar Despesa' : 'Nova Despesa' }}</h3>
+        <form [formGroup]="form" (ngSubmit)="submit()" class="form">
+          <div class="form-row">
+            <div class="field">
+              <label for="category_id">Categoria *</label>
+              <select id="category_id" formControlName="category_id" class="input">
+                <option value="">Selecione uma categoria</option>
+                <option *ngFor="let category of categories" [value]="category.id">
+                  {{ category.name }}
+                </option>
+              </select>
+              <div class="error" *ngIf="showError('category_id', 'required')">
+                Categoria é obrigatória
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="title">Título *</label>
+              <input
+                id="title"
+                type="text"
+                formControlName="title"
+                class="input"
+                placeholder="Ex: Vacinas para filhotes"
+              />
+              <div class="error" *ngIf="showError('title', 'required')">
+                Título é obrigatório
+              </div>
+              <div class="error" *ngIf="showError('title', 'minlength')">
+                Título deve ter pelo menos 3 caracteres
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label for="amount">Valor (R$) *</label>
+              <input
+                id="amount"
+                type="number"
+                formControlName="amount"
+                class="input"
+                placeholder="0.00"
+                step="0.01"
+                min="0.01"
+              />
+              <div class="error" *ngIf="showError('amount', 'required')">
+                Valor é obrigatório
+              </div>
+              <div class="error" *ngIf="showError('amount', 'min')">
+                Valor deve ser maior que zero
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="date">Data *</label>
+              <input
+                id="date"
+                type="date"
+                formControlName="date"
+                class="input"
+              />
+              <div class="error" *ngIf="showError('date', 'required')">
+                Data é obrigatória
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="description">Descrição</label>
+            <textarea
+              id="description"
+              formControlName="description"
+              class="input textarea"
+              placeholder="Descreva a despesa"
+              rows="3"
+            ></textarea>
+          </div>
+
+          <div class="actions">
+            <button type="button" class="btn btn-secondary" (click)="toggleForm()">
+              Cancelar
+            </button>
+            <button 
+              type="submit" 
+              class="btn btn-primary" 
+              [disabled]="form.invalid || loading"
+            >
+              <i class="fas fa-save" *ngIf="!loading"></i>
+              <i class="fas fa-spinner fa-spin" *ngIf="loading"></i>
+              {{ loading ? 'Salvando...' : (editingExpense ? 'Atualizar' : 'Criar') }}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="expenses-list">
+        <div class="loading" *ngIf="loading && !showForm">
+          <i class="fas fa-spinner fa-spin"></i>
+          <p>Carregando despesas...</p>
+        </div>
+
+        <div class="api-error" *ngIf="error && !loading">
+          <i class="fas fa-exclamation-triangle"></i>
+          <p>{{ error }}</p>
+        </div>
+
+        <div class="empty" *ngIf="!loading && !error && expenses.length === 0">
+          <i class="fas fa-receipt"></i>
+          <p>Nenhuma despesa encontrada</p>
+        </div>
+
+        <div class="expenses-grid" *ngIf="!loading && !error && expenses.length > 0">
+          <div class="expense-card" *ngFor="let expense of expenses">
+            <div class="expense-header">
+              <h4>{{ expense.title }}</h4>
+              <span class="amount">{{ formatCurrency(expense.amount) }}</span>
+            </div>
+            
+            <div class="expense-meta">
+              <span class="category">{{ expense.category.name }}</span>
+              <span class="date">{{ formatDate(expense.date) }}</span>
+            </div>
+            
+            <p class="expense-description" *ngIf="expense.description">
+              {{ expense.description }}
+            </p>
+            
+            <div class="expense-footer">
+              <span class="user">Registrado por: {{ expense.user.name }}</span>
+            </div>
+            
+            <div class="expense-actions">
+              <button class="btn btn-sm btn-secondary" (click)="editExpense(expense)">
+                <i class="fas fa-edit"></i>
+                Editar
+              </button>
+              <button class="btn btn-sm btn-danger" (click)="deleteExpense(expense)">
+                <i class="fas fa-trash"></i>
+                Excluir
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

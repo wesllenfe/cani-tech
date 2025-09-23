@@ -1,0 +1,144 @@
+<div class="animal-detail-page">
+  <header class="page-header">
+    <button class="btn-back" (click)="goBack()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="m15 18-6-6 6-6"/>
+      </svg>
+      Voltar
+    </button>
+    <h1 class="page-title">Detalhes do Animal</h1>
+  </header>
+
+  <div *ngIf="loading" class="loading-state">
+    <div class="loading-spinner"></div>
+    <p>Carregando informações...</p>
+  </div>
+
+  <div *ngIf="error && !loading" class="error-state">
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="15" y1="9" x2="9" y2="15"/>
+      <line x1="9" y1="9" x2="15" y2="15"/>
+    </svg>
+    <h3>Oops! Algo deu errado</h3>
+    <p>{{ error }}</p>
+    <button class="btn btn-primary" (click)="goBack()">Voltar ao Dashboard</button>
+  </div>
+
+  <main *ngIf="animal && !loading" class="animal-content">
+    <div class="animal-layout">
+      <section class="photo-section">
+        <div class="main-photo">
+          <img
+            [src]="animal.photo_url || '/assets/placeholder-animal.jpg'"
+            [alt]="'Foto de ' + animal.name"
+            (error)="$event.target.src='/assets/placeholder-animal.jpg'"
+          />
+          <div class="status-badge" [class]="getStatusClass(animal.status)">
+            {{ getStatusText(animal.status) }}
+          </div>
+        </div>
+      </section>
+
+      <section class="info-section">
+        <div class="animal-header">
+          <h1 class="animal-name">{{ animal.name }}</h1>
+          <p class="animal-breed" *ngIf="animal.breed">{{ animal.breed }}</p>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Idade</span>
+            <span class="info-value">{{ getAgeText(animal.age_months) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Sexo</span>
+            <span class="info-value">{{ getGenderText(animal.gender) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Porte</span>
+            <span class="info-value">{{ getSizeText(animal.size) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Cor</span>
+            <span class="info-value">{{ animal.color }}</span>
+          </div>
+          <div class="info-item" *ngIf="animal.weight">
+            <span class="info-label">Peso</span>
+            <span class="info-value">{{ animal.weight }} kg</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Data de Entrada</span>
+            <span class="info-value">{{ formatDate(animal.entry_date) }}</span>
+          </div>
+        </div>
+
+        <div class="description-section" *ngIf="animal.description">
+          <h3 class="section-title">Sobre {{ animal.name }}</h3>
+          <p class="description-text">{{ animal.description }}</p>
+        </div>
+
+        <div class="health-section">
+          <h3 class="section-title">Informações de Saúde</h3>
+          <div class="health-grid">
+            <div class="health-item" [class.positive]="animal.vaccinated">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22,4 12,14.01 9,11.01" *ngIf="animal.vaccinated"/>
+                <line x1="15" y1="9" x2="9" y2="15" *ngIf="!animal.vaccinated"/>
+                <line x1="9" y1="9" x2="15" y2="15" *ngIf="!animal.vaccinated"/>
+              </svg>
+              <span>{{ animal.vaccinated ? 'Vacinado' : 'Não vacinado' }}</span>
+            </div>
+            <div class="health-item" [class.positive]="animal.neutered">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22,4 12,14.01 9,11.01" *ngIf="animal.neutered"/>
+                <line x1="15" y1="9" x2="9" y2="15" *ngIf="!animal.neutered"/>
+                <line x1="9" y1="9" x2="15" y2="15" *ngIf="!animal.neutered"/>
+              </svg>
+              <span>{{ animal.neutered ? 'Castrado' : 'Não castrado' }}</span>
+            </div>
+          </div>
+
+          <div class="medical-notes" *ngIf="animal.medical_notes">
+            <h4 class="notes-title">Observações Médicas</h4>
+            <p class="notes-text">{{ animal.medical_notes }}</p>
+          </div>
+        </div>
+
+        <div class="actions-section">
+          <button
+            *ngIf="animal.status === 'available'"
+            class="btn btn-primary action-btn"
+            (click)="onAdoptClick()"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+            Tenho Interesse em Adotar
+          </button>
+
+          <button
+            class="btn btn-secondary action-btn"
+            (click)="onEditClick()"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+              <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+            Editar Informações
+          </button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Modal de Adoção -->
+  <app-adoption-modal
+    [isOpen]="showAdoptionModal"
+    [animal]="animal"
+    (close)="onAdoptionModalClose()"
+    (adopted)="onAdoptionSubmitted()"
+  ></app-adoption-modal>
+</div>

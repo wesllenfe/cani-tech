@@ -1,0 +1,180 @@
+<div class="home-shell">
+  <!-- Header -->
+  <app-header></app-header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">Dando uma Nova Vida aos Nossos Amigos</h1>
+      <p class="hero-subtitle">
+        No CaniTech, cuidamos com amor de animais que precisam de um lar.
+        Conheça nossos peludos e ajude-nos a continuar nossa missão.
+      </p>
+      <div class="hero-actions">
+        <button class="btn btn-primary btn-large" (click)="goToAnimals()">
+          <i class="fas fa-paw"></i>
+          Ver Animais
+        </button>
+        <button class="btn btn-outline btn-large" (click)="goToDonation()">
+          <i class="fas fa-heart"></i>
+          Fazer Doação
+        </button>
+      </div>
+    </div>
+    <div class="hero-image">
+      <div class="hero-placeholder">
+        <i class="fas fa-paw"></i>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="stats">
+    <div class="stats-content">
+      <div class="stat-item">
+        <div class="stat-number">150+</div>
+        <div class="stat-label">Animais Resgatados</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">120+</div>
+        <div class="stat-label">Adoções Realizadas</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">50+</div>
+        <div class="stat-label">Voluntários</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">5</div>
+        <div class="stat-label">Anos de Atuação</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Animals Section -->
+  <section class="animals" id="animais">
+    <div class="animals-content">
+      <h2 class="section-title">Nossos Animais</h2>
+      <p class="section-subtitle">Conheça alguns dos nossos peludos que estão procurando um lar cheio de amor</p>
+
+      <div class="loading" *ngIf="loading">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Carregando animais...</p>
+      </div>
+
+      <div class="api-error" *ngIf="error && !loading">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p>{{ error }}</p>
+      </div>
+
+      <div class="animals-grid" *ngIf="!loading && !error && animals.length > 0">
+        <app-animal-card
+          *ngFor="let animal of animals"
+          [animal]="animal"
+          (click)="goToAnimals()"
+        ></app-animal-card>
+      </div>
+
+      <div class="animals-actions" *ngIf="!loading && !error">
+        <button class="btn btn-primary" (click)="goToAnimals()">
+          Ver Todos os Animais
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="about" id="sobre">
+    <div class="about-content">
+      <div class="about-text">
+        <h2 class="section-title">Sobre o CaniTech</h2>
+        <p class="about-description">
+          Somos uma organização dedicada ao resgate, cuidado e adoção de animais.
+          Nossa missão é proporcionar uma segunda chance para cães e gatos que
+          precisam de amor e cuidado.
+        </p>
+        <p class="about-description">
+          Com tecnologia e muito carinho, conectamos animais a famílias que podem
+          oferecer um lar permanente e cheio de amor.
+        </p>
+        <div class="about-features">
+          <div class="feature">
+            <i class="fas fa-shield-alt"></i>
+            <span>Cuidado Veterinário</span>
+          </div>
+          <div class="feature">
+            <i class="fas fa-heart"></i>
+            <span>Amor e Carinho</span>
+          </div>
+          <div class="feature">
+            <i class="fas fa-home"></i>
+            <span>Busca por Lar</span>
+          </div>
+        </div>
+      </div>
+      <div class="about-image">
+        <div class="about-placeholder">
+          <i class="fas fa-paw"></i>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta">
+    <div class="cta-content">
+      <h2 class="cta-title">Pronto para Fazer a Diferença?</h2>
+      <p class="cta-subtitle">
+        Adote um animal ou faça uma doação para nos ajudar a continuar nossa missão
+      </p>
+      <div class="cta-actions">
+        <button class="btn btn-primary btn-large" (click)="goToRegister()" *ngIf="!isAuthenticated">
+          <i class="fas fa-user-plus"></i>
+          Criar Conta
+        </button>
+        <button class="btn btn-primary btn-large" (click)="goToDashboard()" *ngIf="isAuthenticated">
+          <i class="fas fa-tachometer-alt"></i>
+          Ir para Dashboard
+        </button>
+        <button class="btn btn-outline btn-large" (click)="goToDonation()">
+          <i class="fas fa-heart"></i>
+          Fazer Doação
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <div class="logo">
+          <img src="../../../assets/images/canitech-logo.png" alt="CaniTech" width="32" height="32">
+          <span>CaniTech</span>
+        </div>
+        <p>Conectando corações, salvando vidas</p>
+      </div>
+
+      <div class="footer-links">
+        <div class="link-group">
+          <h4>Navegação</h4>
+          <a href="#sobre">Sobre</a>
+          <a href="#animais">Animais</a>
+          <a href="#contato">Contato</a>
+        </div>
+
+        <div class="link-group">
+          <h4>Conta</h4>
+          <a href="#" (click)="goToLogin(); $event.preventDefault()" *ngIf="!isAuthenticated">Entrar</a>
+          <a href="#" (click)="goToRegister(); $event.preventDefault()" *ngIf="!isAuthenticated">Criar Conta</a>
+          <a href="#" (click)="goToDashboard(); $event.preventDefault()" *ngIf="isAuthenticated">Dashboard</a>
+          <a href="#" (click)="goToProfile(); $event.preventDefault()" *ngIf="isAuthenticated">Meu Perfil</a>
+          <a href="#" (click)="goToDonation($event)">Doar</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2025 CaniTech. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+</div>

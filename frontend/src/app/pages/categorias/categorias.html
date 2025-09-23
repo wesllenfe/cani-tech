@@ -1,0 +1,130 @@
+<div class="dash-shell">
+  <div class="dash-frame">
+    <div class="dash-brand">
+      <div class="logo">
+        <img src="../../../assets/images/canitech-logo.png" alt="CaniTech" width="32" height="32">
+        <span>CaniTech</span>
+      </div>
+      <h1 class="hello">Categorias</h1>
+      <p class="subtitle">Gerencie categorias de despesas e doações</p>
+      <div class="dots"></div>
+    </div>
+
+    <div class="dash-panel">
+      <div class="toolbar">
+        <button class="btn btn-secondary" (click)="goBack()">
+          <i class="fas fa-arrow-left"></i>
+          Voltar
+        </button>
+        
+        <button class="btn btn-primary" (click)="toggleForm()">
+          <i class="fas fa-plus"></i>
+          {{ showForm ? 'Cancelar' : 'Nova Categoria' }}
+        </button>
+      </div>
+
+      <div class="form-card" *ngIf="showForm">
+        <h3>{{ editingCategory ? 'Editar Categoria' : 'Nova Categoria' }}</h3>
+        <form [formGroup]="form" (ngSubmit)="submit()" class="form">
+          <div class="field">
+            <label for="name">Nome *</label>
+            <input
+              id="name"
+              type="text"
+              formControlName="name"
+              class="input"
+              placeholder="Digite o nome da categoria"
+            />
+            <div class="error" *ngIf="showError('name', 'required')">
+              Nome é obrigatório
+            </div>
+            <div class="error" *ngIf="showError('name', 'minlength')">
+              Nome deve ter pelo menos 3 caracteres
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="description">Descrição</label>
+            <textarea
+              id="description"
+              formControlName="description"
+              class="input textarea"
+              placeholder="Descreva a categoria"
+              rows="3"
+            ></textarea>
+          </div>
+
+          <div class="field">
+            <label for="type">Tipo *</label>
+            <select id="type" formControlName="type" class="input">
+              <option *ngFor="let option of typeOptions" [value]="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+            <div class="error" *ngIf="showError('type', 'required')">
+              Tipo é obrigatório
+            </div>
+          </div>
+
+          <div class="actions">
+            <button type="button" class="btn btn-secondary" (click)="toggleForm()">
+              Cancelar
+            </button>
+            <button 
+              type="submit" 
+              class="btn btn-primary" 
+              [disabled]="form.invalid || loading"
+            >
+              <i class="fas fa-save" *ngIf="!loading"></i>
+              <i class="fas fa-spinner fa-spin" *ngIf="loading"></i>
+              {{ loading ? 'Salvando...' : (editingCategory ? 'Atualizar' : 'Criar') }}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="categories-list">
+        <div class="loading" *ngIf="loading && !showForm">
+          <i class="fas fa-spinner fa-spin"></i>
+          <p>Carregando categorias...</p>
+        </div>
+
+        <div class="api-error" *ngIf="error && !loading">
+          <i class="fas fa-exclamation-triangle"></i>
+          <p>{{ error }}</p>
+        </div>
+
+        <div class="empty" *ngIf="!loading && !error && categories.length === 0">
+          <i class="fas fa-tags"></i>
+          <p>Nenhuma categoria encontrada</p>
+        </div>
+
+        <div class="categories-grid" *ngIf="!loading && !error && categories.length > 0">
+          <div class="category-card" *ngFor="let category of categories">
+            <div class="category-header">
+              <h4>{{ category.name }}</h4>
+              <span class="type-badge" [class]="'type-' + category.type">
+                {{ category.type === 'expense' ? 'Despesa' : 'Doação' }}
+              </span>
+            </div>
+            
+            <p class="category-description" *ngIf="category.description">
+              {{ category.description }}
+            </p>
+            
+            <div class="category-actions">
+              <button class="btn btn-sm btn-secondary" (click)="editCategory(category)">
+                <i class="fas fa-edit"></i>
+                Editar
+              </button>
+              <button class="btn btn-sm btn-danger" (click)="deleteCategory(category)">
+                <i class="fas fa-trash"></i>
+                Excluir
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

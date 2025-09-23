@@ -1,0 +1,110 @@
+<div class="modal-backdrop" *ngIf="isOpen" (click)="onBackdropClick($event)">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <!-- Header -->
+    <div class="modal-header">
+      <div class="animal-info">
+        <img
+          [src]="animal?.photo_url || '/assets/placeholder-animal.jpg'"
+          [alt]="animal?.name"
+          class="animal-photo"
+        >
+        <div class="animal-details">
+          <h2 class="animal-name">{{ animal?.name }}</h2>
+          <p class="animal-breed" *ngIf="animal?.breed">{{ animal?.breed }}</p>
+        </div>
+      </div>
+      <button class="close-btn" (click)="closeModal()" type="button">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Loading/Error States -->
+    <div *ngIf="submitting" class="loading-state">
+      <div class="spinner"></div>
+      <p>Enviando solicitação...</p>
+    </div>
+
+    <div *ngIf="submitError" class="error-state">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="15" y1="9" x2="9" y2="15"/>
+        <line x1="9" y1="9" x2="15" y2="15"/>
+      </svg>
+      <p>{{ submitError }}</p>
+      <button class="btn btn-primary" (click)="submitError = null">Tentar novamente</button>
+    </div>
+
+    <!-- Success State -->
+    <div *ngIf="submitted" class="success-state">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+        <polyline points="22,4 12,14.01 9,11.01"/>
+      </svg>
+      <h3>Solicitação enviada!</h3>
+      <p>Sua solicitação de adoção para <strong>{{ animal?.name }}</strong> foi enviada com sucesso.</p>
+      <p class="success-note">Entraremos em contato em breve para prosseguir com o processo de adoção.</p>
+      <div class="success-actions">
+        <button class="btn btn-primary" (click)="closeModal()">Fechar</button>
+        <button class="btn btn-secondary" (click)="goToMyAdoptions()">Ver minhas solicitações</button>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <form *ngIf="!submitting && !submitError && !submitted" [formGroup]="adoptionForm" (ngSubmit)="onSubmit()">
+      <div class="form-content">
+        <div class="form-header">
+          <h3>Interesse em Adoção</h3>
+          <p>Conte-nos por que você gostaria de adotar {{ animal?.name }} e um pouco sobre você.</p>
+        </div>
+
+        <div class="form-group">
+          <label for="message" class="form-label">
+            Mensagem
+            <span class="optional">(opcional)</span>
+          </label>
+          <textarea
+            id="message"
+            formControlName="message"
+            class="form-textarea"
+            placeholder="Ex: Tenho experiência com cães, tenho quintal grande e muito amor para dar..."
+            rows="4"
+          ></textarea>
+          <div class="form-hint">
+            Compartilhe informações que possam ajudar na avaliação da sua solicitação.
+          </div>
+        </div>
+
+        <div class="info-box">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+          <div>
+            <h4>Processo de Adoção</h4>
+            <p>Após enviar sua solicitação, nossa equipe entrará em contato para:</p>
+            <ul>
+              <li>Conhecer melhor você e sua família</li>
+              <li>Agendar uma visita ao animal</li>
+              <li>Orientar sobre cuidados necessários</li>
+              <li>Finalizar o processo de adoção</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+        <button type="submit" class="btn btn-primary" [disabled]="adoptionForm.invalid">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+          Enviar Solicitação
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

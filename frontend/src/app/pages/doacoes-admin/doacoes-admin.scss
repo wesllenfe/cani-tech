@@ -1,0 +1,283 @@
+@use '../../../styles/auth-mobile';
+
+.dash-shell {
+  min-height: 100vh;
+  padding: clamp(20px, 4vw, 36px);
+  background: var(--c-bg);
+  font-family: var(--font-sans);
+
+  .dash-frame {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 2.5fr;
+    gap: 28px;
+
+    @media (max-width: 968px) {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+  }
+
+  .dash-brand {
+    color: var(--c-text);
+    padding: clamp(20px, 4vw, 28px);
+    background: var(--c-surface);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    @media (max-width: 968px) {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      margin-bottom: clamp(16px, 2vw, 24px);
+    }
+
+    .hello {
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin: 0 0 12px 0;
+      line-height: 1.2;
+      color: var(--c-primary);
+    }
+
+    .subtitle {
+      color: var(--c-muted);
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .dots {
+      position: absolute;
+      right: clamp(20px, 4vw, 28px);
+      bottom: clamp(20px, 4vw, 28px);
+      width: 100px;
+      height: 80px;
+      background-image: radial-gradient(var(--c-primary) 1.5px, transparent 1.5px);
+      background-size: 12px 12px;
+      opacity: 0.08;
+
+      @media (max-width: 968px) {
+        display: none;
+      }
+    }
+  }
+
+  .dash-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+
+    .toolbar {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .form-card {
+      background: var(--c-surface);
+      border-radius: var(--radius-lg);
+      padding: clamp(22px, 4.5vw, 36px);
+      box-shadow: 0 18px 40px rgba(0,0,0,.12), 0 1px 0 rgba(0,0,0,.04);
+      margin-bottom: 20px;
+
+      h3 {
+        margin: 0 0 20px 0;
+        color: var(--c-text);
+        font-size: 1.2rem;
+        font-weight: 600;
+      }
+
+      .form {
+        display: grid;
+        gap: 20px;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+
+        @media (max-width: 600px) {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .field {
+        display: grid;
+        gap: 6px;
+
+        label {
+          font-weight: 600;
+          color: var(--c-text);
+          font-size: 0.9rem;
+        }
+
+        .textarea {
+          resize: vertical;
+          min-height: 80px;
+        }
+      }
+
+      .actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 24px;
+      }
+
+      .error {
+        color: #ef4444;
+        font-size: 0.82rem;
+      }
+    }
+
+    .donations-list {
+      .loading, .api-error, .empty {
+        text-align: center;
+        padding: 48px 16px;
+        color: var(--c-muted);
+
+        i {
+          font-size: 2.5rem;
+          margin-bottom: 16px;
+          display: block;
+        }
+
+        p {
+          margin: 0;
+          font-size: 1.1rem;
+        }
+      }
+
+      .api-error {
+        color: #dc3545;
+        
+        i {
+          color: #dc3545;
+        }
+      }
+
+      .donations-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 20px;
+
+        .donation-card {
+          background: var(--c-surface);
+          border-radius: var(--radius-lg);
+          padding: 20px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+          transition: transform 0.2s, box-shadow 0.2s;
+
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+          }
+
+          .donation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+
+            h4 {
+              margin: 0;
+              color: var(--c-text);
+              font-size: 1.1rem;
+              font-weight: 600;
+              flex: 1;
+            }
+
+            .amount {
+              font-size: 1.2rem;
+              font-weight: 700;
+              color: #28a745;
+              margin-left: 12px;
+            }
+          }
+
+          .donation-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+
+            .category {
+              background: #d4edda;
+              color: #155724;
+              padding: 4px 8px;
+              border-radius: 12px;
+              font-weight: 500;
+            }
+
+            .date {
+              color: var(--c-muted);
+            }
+          }
+
+          .donation-description {
+            color: var(--c-muted);
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin: 0 0 12px 0;
+          }
+
+          .donation-footer {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-bottom: 16px;
+            font-size: 0.8rem;
+            color: var(--c-muted);
+
+            .donor, .donor-email {
+              display: flex;
+              align-items: center;
+              gap: 6px;
+
+              i {
+                width: 12px;
+              }
+            }
+          }
+
+          .donation-actions {
+            display: flex;
+            gap: 8px;
+
+            .btn-sm {
+              padding: 6px 12px;
+              font-size: 0.8rem;
+              border-radius: var(--radius-sm);
+            }
+
+            .btn-danger {
+              background: #dc3545;
+              color: white;
+              border: none;
+
+              &:hover {
+                background: #c82333;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

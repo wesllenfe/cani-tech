@@ -1,0 +1,126 @@
+<div class="dash-shell">
+  <div class="dash-frame">
+    <div class="dash-brand">
+      <div class="logo">
+        <img src="../../../assets/images/canitech-logo.png" alt="CaniTech" width="32" height="32">
+        <span>CaniTech</span>
+      </div>
+      <h1 class="hello">Meu Perfil</h1>
+      <p class="subtitle">Gerencie suas informações pessoais</p>
+      <div class="dots"></div>
+    </div>
+
+    <div class="dash-panel">
+      <div class="toolbar">
+        <button class="btn btn-secondary" (click)="goBack()">
+          <i class="fas fa-arrow-left"></i>
+          Voltar
+        </button>
+      </div>
+
+      <div class="form-card">
+        <form [formGroup]="form" (ngSubmit)="submit()" class="form">
+          <div class="field">
+            <label for="name">Nome Completo</label>
+            <input
+              id="name"
+              type="text"
+              formControlName="name"
+              class="input"
+              placeholder="Digite seu nome completo"
+            />
+            <div class="error" *ngIf="showError('name', 'required')">
+              Nome é obrigatório
+            </div>
+            <div class="error" *ngIf="showError('name', 'minlength')">
+              Nome deve ter pelo menos 3 caracteres
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="email">E-mail</label>
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              class="input"
+              placeholder="Digite seu e-mail"
+            />
+            <div class="error" *ngIf="showError('email', 'required')">
+              E-mail é obrigatório
+            </div>
+            <div class="error" *ngIf="showError('email', 'email')">
+              E-mail inválido
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="cpf">CPF</label>
+            <input
+              id="cpf"
+              type="text"
+              formControlName="cpf"
+              class="input"
+              placeholder="Digite seu CPF (apenas números)"
+              maxlength="11"
+            />
+            <div class="error" *ngIf="showError('cpf', 'required')">
+              CPF é obrigatório
+            </div>
+            <div class="error" *ngIf="showError('cpf', 'pattern')">
+              CPF deve conter 11 dígitos
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="birth_date">Data de Nascimento</label>
+            <input
+              id="birth_date"
+              type="date"
+              formControlName="birth_date"
+              class="input"
+            />
+            <div class="error" *ngIf="showError('birth_date', 'required')">
+              Data de nascimento é obrigatória
+            </div>
+          </div>
+
+          <div class="field" *ngIf="user">
+            <label>Função</label>
+            <div class="role-display">
+              <span class="role-badge" [class]="'role-' + user.role">
+                {{ user.role === 'admin' ? 'Administrador' : 
+                   user.role === 'caregiver' ? 'Cuidador' : 'Adotante' }}
+              </span>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button type="button" class="btn btn-secondary" (click)="goBack()">
+              Cancelar
+            </button>
+            <button 
+              type="submit" 
+              class="btn btn-primary" 
+              [disabled]="form.invalid || saving"
+            >
+              <i class="fas fa-save" *ngIf="!saving"></i>
+              <i class="fas fa-spinner fa-spin" *ngIf="saving"></i>
+              {{ saving ? 'Salvando...' : 'Salvar Alterações' }}
+            </button>
+          </div>
+
+          <div class="api-error" *ngIf="apiError">
+            <i class="fas fa-exclamation-triangle"></i>
+            {{ apiError }}
+          </div>
+
+          <div class="success-message" *ngIf="successMessage">
+            <i class="fas fa-check-circle"></i>
+            {{ successMessage }}
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,228 @@
+<div class="dash-shell">
+  <div class="dash-frame">
+    <div class="dash-brand">
+      <div class="logo">
+        <img src="../../../assets/images/canitech-logo.png" alt="CaniTech" width="32" height="32">
+        <span>CaniTech</span>
+      </div>
+      <h1 class="hello">Usuários</h1>
+      <p class="subtitle">Gerencie os usuários do sistema</p>
+      <div class="dots"></div>
+    </div>
+
+    <div class="dash-panel">
+      <div class="toolbar">
+        <button class="btn btn-secondary" (click)="goBack()">
+          <i class="fas fa-arrow-left"></i>
+          Voltar
+        </button>
+        
+        <button class="btn btn-primary" (click)="toggleForm()">
+          <i class="fas fa-plus"></i>
+          {{ showForm ? 'Cancelar' : 'Novo Usuário' }}
+        </button>
+      </div>
+
+      <div class="form-card" *ngIf="showForm">
+        <h3>{{ editingUser ? 'Editar Usuário' : 'Novo Usuário' }}</h3>
+        <form [formGroup]="form" (ngSubmit)="submit()" class="form">
+          <div class="form-row">
+            <div class="field">
+              <label for="name">Nome Completo *</label>
+              <input
+                id="name"
+                type="text"
+                formControlName="name"
+                class="input"
+                placeholder="Digite o nome completo"
+              />
+              <div class="error" *ngIf="showError('name', 'required')">
+                Nome é obrigatório
+              </div>
+              <div class="error" *ngIf="showError('name', 'minlength')">
+                Nome deve ter pelo menos 3 caracteres
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="email">E-mail *</label>
+              <input
+                id="email"
+                type="email"
+                formControlName="email"
+                class="input"
+                placeholder="email@exemplo.com"
+              />
+              <div class="error" *ngIf="showError('email', 'required')">
+                E-mail é obrigatório
+              </div>
+              <div class="error" *ngIf="showError('email', 'email')">
+                E-mail inválido
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label for="cpf">CPF *</label>
+              <input
+                id="cpf"
+                type="text"
+                formControlName="cpf"
+                class="input"
+                placeholder="12345678901"
+                maxlength="11"
+              />
+              <div class="error" *ngIf="showError('cpf', 'required')">
+                CPF é obrigatório
+              </div>
+              <div class="error" *ngIf="showError('cpf', 'pattern')">
+                CPF deve conter 11 dígitos
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="birth_date">Data de Nascimento *</label>
+              <input
+                id="birth_date"
+                type="date"
+                formControlName="birth_date"
+                class="input"
+              />
+              <div class="error" *ngIf="showError('birth_date', 'required')">
+                Data de nascimento é obrigatória
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label for="password">Senha {{ editingUser ? '(deixe em branco para manter)' : '*' }}</label>
+              <input
+                id="password"
+                type="password"
+                formControlName="password"
+                class="input"
+                placeholder="Digite a senha"
+              />
+              <div class="error" *ngIf="showError('password', 'required')">
+                Senha é obrigatória
+              </div>
+              <div class="error" *ngIf="showError('password', 'minlength')">
+                Senha deve ter pelo menos 8 caracteres
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="password_confirmation">Confirmar Senha</label>
+              <input
+                id="password_confirmation"
+                type="password"
+                formControlName="password_confirmation"
+                class="input"
+                placeholder="Confirme a senha"
+              />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="role">Função *</label>
+            <select id="role" formControlName="role" class="input">
+              <option *ngFor="let option of roleOptions" [value]="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+            <div class="error" *ngIf="showError('role', 'required')">
+              Função é obrigatória
+            </div>
+          </div>
+
+          <div class="actions">
+            <button type="button" class="btn btn-secondary" (click)="toggleForm()">
+              Cancelar
+            </button>
+            <button 
+              type="submit" 
+              class="btn btn-primary" 
+              [disabled]="form.invalid || loading"
+            >
+              <i class="fas fa-save" *ngIf="!loading"></i>
+              <i class="fas fa-spinner fa-spin" *ngIf="loading"></i>
+              {{ loading ? 'Salvando...' : (editingUser ? 'Atualizar' : 'Criar') }}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="users-list">
+        <div class="loading" *ngIf="loading && !showForm">
+          <i class="fas fa-spinner fa-spin"></i>
+          <p>Carregando usuários...</p>
+        </div>
+
+        <div class="api-error" *ngIf="error && !loading">
+          <i class="fas fa-exclamation-triangle"></i>
+          <p>{{ error }}</p>
+        </div>
+
+        <div class="empty" *ngIf="!loading && !error && users.length === 0">
+          <i class="fas fa-users"></i>
+          <p>Nenhum usuário encontrado</p>
+        </div>
+
+        <div class="users-grid" *ngIf="!loading && !error && users.length > 0">
+          <div class="user-card" *ngFor="let user of users">
+            <div class="user-header">
+              <div class="user-info">
+                <h4>{{ user.name }}</h4>
+                <span class="role-badge" [class]="'role-' + user.role">
+                  {{ getRoleLabel(user.role) }}
+                </span>
+              </div>
+              <div class="user-status">
+                <span class="verified" *ngIf="user.email_verified_at">
+                  <i class="fas fa-check-circle"></i>
+                  Verificado
+                </span>
+                <span class="unverified" *ngIf="!user.email_verified_at">
+                  <i class="fas fa-clock"></i>
+                  Pendente
+                </span>
+              </div>
+            </div>
+            
+            <div class="user-details">
+              <div class="detail-row">
+                <span class="label">E-mail:</span>
+                <span class="value">{{ user.email }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">CPF:</span>
+                <span class="value">{{ user.cpf }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">Nascimento:</span>
+                <span class="value">{{ formatDate(user.birth_date) }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">Cadastrado em:</span>
+                <span class="value">{{ formatDate(user.created_at) }}</span>
+              </div>
+            </div>
+            
+            <div class="user-actions">
+              <button class="btn btn-sm btn-secondary" (click)="editUser(user)">
+                <i class="fas fa-edit"></i>
+                Editar
+              </button>
+              <button class="btn btn-sm btn-danger" (click)="deleteUser(user)" *ngIf="user.role !== 'admin'">
+                <i class="fas fa-trash"></i>
+                Excluir
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

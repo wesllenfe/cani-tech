@@ -1,0 +1,211 @@
+$bg-page: #f1f5ff;
+$text-primary: #0f172a;
+$text-secondary: #64748b;
+$input-bg: #fff;
+$input-border: rgba(16, 24, 40, 0.1);
+$input-focus-shadow: #a3a3a3;
+$font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: $bg-page;
+  color: $text-primary;
+  font-family: $font-family;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
+
+.input {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 0.98rem;
+  border-radius: 4px;
+  background: $input-bg;
+  border: 1px solid $input-border;
+
+  &:focus {
+    box-shadow: 0 0 0 3px $input-focus-shadow;
+    outline: none;
+    border-color: #000000;
+  }
+
+  &::placeholder {
+    color: #94a3b8;
+  }
+}
+
+.dash-shell {
+  min-height: 100vh;
+  background: $bg-page;
+  font-family: $font-family;
+
+  app-header {
+    max-width: 1320px;
+    margin: 0 auto 0 auto;
+    width: 100%;
+  }
+
+  .dash-content {
+    padding: clamp(20px, 4vw, 36px);
+  }
+
+  .dash-frame {
+    max-width: 1320px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 2.8fr;
+    gap: 28px;
+
+    @media (max-width: 968px) {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+  }
+
+  .dash-brand {
+    color: $text-primary;
+    padding: clamp(20px, 4vw, 28px);
+    background: $input-bg;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    @media (max-width: 968px) {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .hello {
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin: 0 0 12px 0;
+      line-height: 1.2;
+      color: #000000;
+    }
+
+    .subtitle {
+      color: $text-secondary;
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .dots {
+      position: absolute;
+      right: clamp(20px, 4vw, 28px);
+      bottom: clamp(20px, 4vw, 28px);
+      width: 100px;
+      height: 80px;
+      background-image: radial-gradient(#000000 1.5px, transparent 1.5px);
+      background-size: 12px 12px;
+      opacity: 0.08;
+
+      @media (max-width: 968px) {
+        display: none;
+      }
+    }
+  }
+
+  .dash-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+
+    .toolbar {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+
+      .search-wrapper {
+        display: flex;
+        align-items: center;
+        position: relative;
+
+        .search-icon {
+          position: absolute;
+          left: 12px;
+          color: #94a3b8;
+        }
+
+        .search {
+          padding-left: 36px; // espaço para o ícone
+        }
+      }
+
+      .select-filter {
+        max-width: 220px;
+      }
+    }
+
+    .stats {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+
+      .stat-card {
+        background: $input-bg;
+        border-radius: 8px;
+        padding: 12px 16px;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+        .stat-icon {
+          font-size: 1.5rem;
+          color: $text-primary;
+        }
+
+        .stat-content {
+          .label {
+            font-size: 0.85rem;
+            color: $text-secondary;
+          }
+
+          .value {
+            font-weight: 700;
+            font-size: 1.2rem;
+          }
+        }
+      }
+    }
+
+    .grid {
+      display: flex;
+      flex-direction: column;
+
+      .loading, .api-error, .empty {
+        text-align: center;
+        padding: 32px 16px;
+        color: $text-secondary;
+
+        i {
+          font-size: 2rem;
+          margin-bottom: 12px;
+          display: block;
+        }
+
+        p {
+          margin: 0;
+        }
+      }
+
+      .grid-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 16px;
+      }
+    }
+  }
+}
