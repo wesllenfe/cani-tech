@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
+import { NotificationService } from '../../services/notification.service';
 
 export interface FinancialSummary {
   totalDonations: number;
@@ -35,10 +36,11 @@ export interface CategorySummary {
 export class RelatoriosComponent implements OnInit {
   private router = inject(Router);
   private http = inject(HttpClient);
+  private notificationService = inject(NotificationService);
 
   loading = false;
   error: string | null = null;
-  
+
   financialSummary: FinancialSummary | null = null;
   categoryDonations: CategorySummary[] = [];
   categoryExpenses: CategorySummary[] = [];
@@ -74,15 +76,15 @@ export class RelatoriosComponent implements OnInit {
   private processFinancialData(donations: any[], expenses: any[], categories: any[]) {
     const totalDonations = donations.reduce((sum, d) => sum + parseFloat(d.amount), 0);
     const totalExpenses = expenses.reduce((sum, e) => sum + parseFloat(e.amount), 0);
-    
+
     const currentMonth = new Date().getMonth();
     const currentYear = new Date().getFullYear();
-    
+
     const monthlyDonations = donations.filter(d => {
       const date = new Date(d.date);
       return date.getMonth() === currentMonth && date.getFullYear() === currentYear;
     }).reduce((sum, d) => sum + parseFloat(d.amount), 0);
-    
+
     const monthlyExpenses = expenses.filter(e => {
       const date = new Date(e.date);
       return date.getMonth() === currentMonth && date.getFullYear() === currentYear;
@@ -102,11 +104,11 @@ export class RelatoriosComponent implements OnInit {
     };
 
     this.processCategoryData(donations, expenses, categories);
-    
+
     this.recentDonations = donations
       .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
       .slice(0, 5);
-      
+
     this.recentExpenses = expenses
       .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
       .slice(0, 5);
@@ -115,14 +117,14 @@ export class RelatoriosComponent implements OnInit {
   private processCategoryData(donations: any[], expenses: any[], categories: any[]) {
     const donationsByCategory = new Map<number, {total: number, count: number}>();
     const expensesByCategory = new Map<number, {total: number, count: number}>();
-    
+
     donations.forEach(d => {
       const current = donationsByCategory.get(d.category_id) || {total: 0, count: 0};
       current.total += parseFloat(d.amount);
       current.count += 1;
       donationsByCategory.set(d.category_id, current);
     });
-    
+
     expenses.forEach(e => {
       const current = expensesByCategory.get(e.category_id) || {total: 0, count: 0};
       current.total += parseFloat(e.amount);

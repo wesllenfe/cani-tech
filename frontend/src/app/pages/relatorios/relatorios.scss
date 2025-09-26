@@ -1,44 +1,54 @@
+@use '../../../styles/auth-mobile';
+
 .dash-shell {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
+  padding: clamp(20px, 4vw, 36px);
+  background: var(--c-bg);
+  font-family: var(--font-sans);
 
-.dash-frame {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  width: 100%;
-  max-width: 1400px;
-  min-height: 90vh;
-  display: grid;
-  grid-template-columns: 320px 1fr;
+  .dash-frame {
+    max-width: 1320px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 2.8fr;
+    gap: 28px;
+
+    @media (max-width: 968px) {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+  }
 }
 
 .dash-brand {
-  background: linear-gradient(145deg, #1e3a8a, #3b82f6);
-  color: white;
-  padding: 40px 30px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  color: var(--c-text);
+  padding: clamp(20px, 4vw, 28px);
+  background: var(--c-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  @media (max-width: 968px) {
+    text-align: center;
+    padding: 20px;
+  }
 
   .logo {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 30px;
-    
+    gap: 10px;
+    font-weight: 700;
+    letter-spacing: .5px;
+    margin-bottom: clamp(16px, 2vw, 24px);
+
     img {
       border-radius: 8px;
     }
-    
+
     span {
       font-size: 1.5rem;
       font-weight: 700;
@@ -46,15 +56,15 @@
   }
 
   .hello {
-    font-size: 2.5rem;
+    font-size: 1.8rem;
     font-weight: 800;
     margin: 0 0 16px 0;
     line-height: 1.1;
   }
 
   .subtitle {
-    font-size: 1.1rem;
-    opacity: 0.9;
+    font-size: 1rem;
+    color: var(--c-muted);
     margin: 0;
     line-height: 1.5;
   }
@@ -65,16 +75,18 @@
     right: 0;
     width: 200px;
     height: 200px;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 2px, transparent 2px);
+    background: radial-gradient(circle, rgba(0,0,0,0.05) 2px, transparent 2px);
     background-size: 20px 20px;
-    opacity: 0.5;
+    opacity: 0.3;
   }
 }
 
 .dash-panel {
-  padding: 40px;
+  background: var(--c-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  padding: clamp(20px, 4vw, 32px);
   overflow-y: auto;
-  max-height: 90vh;
 }
 
 .toolbar {
@@ -90,29 +102,30 @@
   gap: 8px;
   padding: 12px 20px;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
   text-decoration: none;
+  font-family: var(--font-sans);
 
   &.btn-primary {
-    background: #3b82f6;
+    background: var(--c-primary);
     color: white;
 
     &:hover {
-      background: #2563eb;
-      transform: translateY(-2px);
+      background: var(--c-primary-2);
+      transform: translateY(-1px);
     }
   }
 
   &.btn-secondary {
-    background: #f3f4f6;
-    color: #374151;
-    border: 1px solid #d1d5db;
+    background: var(--c-surface);
+    color: var(--c-text);
+    border: 1px solid rgba(0, 0, 0, 0.1);
 
     &:hover {
-      background: #e5e7eb;
+      background: var(--c-bg);
     }
   }
 }
@@ -120,7 +133,7 @@
 .loading, .api-error {
   text-align: center;
   padding: 60px 20px;
-  color: #6b7280;
+  color: var(--c-muted);
 
   i {
     font-size: 3rem;
@@ -148,13 +161,13 @@
   font-size: 1.5rem;
   font-weight: 700;
   margin: 0 0 24px 0;
-  color: #111827;
+  color: var(--c-text);
   display: flex;
   align-items: center;
   gap: 12px;
 
   i {
-    color: #3b82f6;
+    color: var(--c-primary);
   }
 }
 
@@ -166,9 +179,9 @@
   }
 
   .stat-card {
-    background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
+    background: var(--c-surface);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: var(--radius-lg);
     padding: 24px;
     display: flex;
     align-items: center;
@@ -176,13 +189,13 @@
     transition: all 0.2s ease;
 
     &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
     }
 
     &.donations {
       border-left: 4px solid #10b981;
-      
+
       .stat-icon {
         background: rgba(16, 185, 129, 0.1);
         color: #10b981;
@@ -191,7 +204,7 @@
 
     &.expenses {
       border-left: 4px solid #ef4444;
-      
+
       .stat-icon {
         background: rgba(239, 68, 68, 0.1);
         color: #ef4444;
@@ -199,17 +212,17 @@
     }
 
     &.balance.positive {
-      border-left: 4px solid #3b82f6;
-      
+      border-left: 4px solid var(--color-success);
+
       .stat-icon {
-        background: rgba(59, 130, 246, 0.1);
-        color: #3b82f6;
+        background: rgba(34, 197, 94, 0.1);
+        color: var(--color-success);
       }
     }
 
     &.balance.negative {
       border-left: 4px solid #f59e0b;
-      
+
       .stat-icon {
         background: rgba(245, 158, 11, 0.1);
         color: #f59e0b;
@@ -235,27 +248,28 @@
       font-size: 1.75rem;
       font-weight: 800;
       margin: 0 0 4px 0;
-      color: #111827;
+      color: var(--c-text);
     }
 
     .stat-label {
       font-size: 1rem;
       font-weight: 600;
-      color: #6b7280;
+      color: var(--c-muted);
       margin: 0 0 4px 0;
     }
 
     .stat-count {
       font-size: 0.875rem;
-      color: #9ca3af;
+      color: var(--c-muted);
+      opacity: 0.8;
     }
   }
 }
 
 .monthly-overview {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
+  background: var(--c-bg);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: var(--radius-lg);
   padding: 30px;
 
   .monthly-stats {
@@ -270,14 +284,14 @@
     align-items: center;
     text-align: center;
     padding: 20px;
-    background: white;
-    border-radius: 8px;
-    border: 1px solid #e5e7eb;
+    background: var(--c-surface);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(0, 0, 0, 0.05);
 
     .monthly-label {
       font-size: 0.875rem;
       font-weight: 600;
-      color: #6b7280;
+      color: var(--c-muted);
       margin-bottom: 8px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -296,7 +310,7 @@
       }
 
       &.positive {
-        color: #3b82f6;
+        color: var(--color-success);
       }
 
       &.negative {
@@ -317,9 +331,9 @@
 }
 
 .category-section, .activity-section {
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
+  background: var(--c-surface);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: var(--radius-lg);
   padding: 24px;
 }
 
@@ -334,14 +348,14 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px;
-  background: #f9fafb;
-  border: 1px solid #f3f4f6;
-  border-radius: 8px;
+  background: var(--c-bg);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: var(--radius-md);
   transition: all 0.2s ease;
 
   &:hover {
-    background: #f3f4f6;
-    border-color: #e5e7eb;
+    background: rgba(0, 0, 0, 0.02);
+    border-color: rgba(0, 0, 0, 0.1);
   }
 }
 
@@ -350,27 +364,27 @@
 
   .category-name, .activity-title {
     font-weight: 600;
-    color: #111827;
+    color: var(--c-text);
     display: block;
     margin-bottom: 4px;
   }
 
   .category-count, .activity-meta {
     font-size: 0.875rem;
-    color: #6b7280;
+    color: var(--c-muted);
   }
 
   .activity-meta {
     display: flex;
     gap: 12px;
-    
+
     span {
       &::before {
         content: "•";
         margin: 0 4px;
-        color: #d1d5db;
+        color: rgba(0, 0, 0, 0.3);
       }
-      
+
       &:first-child::before {
         display: none;
       }
@@ -394,7 +408,7 @@
 .empty-state {
   text-align: center;
   padding: 40px 20px;
-  color: #9ca3af;
+  color: var(--c-muted);
 
   i {
     font-size: 2rem;
@@ -409,7 +423,7 @@
 }
 
 @media (max-width: 1024px) {
-  .dash-frame {
+  .dash-shell .dash-frame {
     grid-template-columns: 1fr;
     max-width: 800px;
   }
@@ -431,11 +445,10 @@
 @media (max-width: 640px) {
   .dash-shell {
     padding: 10px;
-  }
 
-  .dash-frame {
-    min-height: 95vh;
-    border-radius: 12px;
+    .dash-frame {
+      border-radius: var(--radius-lg);
+    }
   }
 
   .dash-brand {

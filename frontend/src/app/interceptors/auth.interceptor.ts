@@ -11,15 +11,26 @@ export class AuthInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = this.auth.getToken();
 
-    if (token && req.url.startsWith(environment.apiUrl)) {
+    // Adiciona token Bearer para requisições à API (tanto localhost quanto URLs que começam com /api)
+    if (token && (req.url.startsWith('http://localhost:8000/api') || req.url.startsWith('/api') || (environment.apiUrl && req.url.startsWith(environment.apiUrl)))) {
       const cloned = req.clone({
         setHeaders: {
           Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
         },
       });
       return next.handle(cloned);
     }
 
-    return next.handle(req);
+    // Para requisições sem token, adiciona headers básicos
+    const cloned = req.clone({
+      setHeaders: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+    });
+
+    return next.handle(cloned);
   }
 }

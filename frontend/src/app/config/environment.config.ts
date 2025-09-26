@@ -1,4 +1,4 @@
-export const USE_MOCK_DATA = false;
+export const USE_MOCK_DATA = false; // Alterar para 'true' para usar dados mockados
 
 export const ENVIRONMENT_INFO = {
   mode: USE_MOCK_DATA ? 'MOCK' : 'API',

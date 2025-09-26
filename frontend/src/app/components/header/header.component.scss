@@ -8,7 +8,7 @@
   top: 0;
   z-index: 100;
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
-  margin-bottom: 24px;
+  margin-bottom: 0;
   margin-top: 0;
 
   .header-content {
@@ -65,8 +65,8 @@
       }
 
       .btn-primary {
-        background: #3b82f6;
-        color: white;
+        background: var(--color-dark);
+        color: var(--color-light);
         border: none;
         padding: 6px 12px;
         border-radius: 6px;
@@ -76,7 +76,7 @@
         font-size: 0.9rem;
 
         &:hover {
-          background: #2563eb;
+          background: var(--color-darker);
           transform: translateY(-1px);
         }
       }
@@ -163,7 +163,7 @@
 
           &.text-danger {
             color: #dc2626;
-            
+
             &:hover {
               background-color: #fef2f2;
               color: #b91c1c;

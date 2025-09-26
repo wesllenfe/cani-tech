@@ -67,12 +67,12 @@
           transition: all 0.3s ease;
 
           &.btn-primary {
-            background: var(--c-primary);
+            background: var(--color-dark);
             color: white;
             border: none;
 
             &:hover {
-              background: var(--c-primary-dark);
+              background: var(--color-darker);
               transform: translateY(-2px);
               box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
             }
@@ -208,14 +208,14 @@
           transition: all 0.3s ease;
 
           &.btn-primary {
-            background: #667eea;
+            background: var(--color-dark);
             color: white;
             border: none;
 
             &:hover {
-              background: #5a67d8;
+              background: var(--color-darker);
               transform: translateY(-2px);
-              box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+              box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
             }
           }
         }

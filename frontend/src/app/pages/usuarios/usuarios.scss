@@ -1,44 +1,54 @@
+@use '../../../styles/auth-mobile';
+
 .dash-shell {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
+  padding: clamp(20px, 4vw, 36px);
+  background: var(--c-bg);
+  font-family: var(--font-sans);
 
-.dash-frame {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  width: 100%;
-  max-width: 1400px;
-  min-height: 90vh;
-  display: grid;
-  grid-template-columns: 320px 1fr;
+  .dash-frame {
+    max-width: 1320px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 2.8fr;
+    gap: 28px;
+
+    @media (max-width: 968px) {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+  }
 }
 
 .dash-brand {
-  background: linear-gradient(145deg, #1e3a8a, #3b82f6);
-  color: white;
-  padding: 40px 30px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  color: var(--c-text);
+  padding: clamp(20px, 4vw, 28px);
+  background: var(--c-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  @media (max-width: 968px) {
+    text-align: center;
+    padding: 20px;
+  }
 
   .logo {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 30px;
-    
+    gap: 10px;
+    font-weight: 700;
+    letter-spacing: .5px;
+    margin-bottom: clamp(16px, 2vw, 24px);
+
     img {
       border-radius: 8px;
     }
-    
+
     span {
       font-size: 1.5rem;
       font-weight: 700;
@@ -46,7 +56,7 @@
   }
 
   .hello {
-    font-size: 2.5rem;
+    font-size: 1.8rem;
     font-weight: 800;
     margin: 0 0 16px 0;
     line-height: 1.1;
@@ -98,11 +108,11 @@
   text-decoration: none;
 
   &.btn-primary {
-    background: #3b82f6;
+    background: var(--color-dark);
     color: white;
 
     &:hover {
-      background: #2563eb;
+      background: var(--color-darker);
       transform: translateY(-2px);
     }
   }
@@ -189,8 +199,8 @@
 
     &:focus {
       outline: none;
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      border-color: var(--color-dark);
+      box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
     }
   }
 
@@ -251,8 +261,8 @@
   transition: all 0.2s ease;
 
   &:hover {
-    border-color: #3b82f6;
-    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+    border-color: var(--color-dark);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
     transform: translateY(-2px);
   }
 }
@@ -309,8 +319,8 @@
   }
 
   &.role-caregiver {
-    background: rgba(59, 130, 246, 0.1);
-    color: #2563eb;
+    background: rgba(0, 0, 0, 0.1);
+    color: var(--color-dark);
   }
 
   &.role-adopter {
