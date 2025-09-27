@@ -23,21 +23,13 @@ export class HeaderComponent {
   }
 
   private checkAuthStatus() {
-    const token = this.authService.getToken();
-    const user = this.authService.getUser();
-
-    // Se há token mas não há dados do usuário, limpa tudo
-    if (token && !user) {
-      localStorage.removeItem('ct_token');
-      localStorage.removeItem('ct_user');
-      this.isAuthenticated = false;
-      this.userRole = null;
-      return;
-    }
-
     this.isAuthenticated = this.authService.isAuthenticated();
-    if (user) {
-      this.userRole = user.role;
+
+    if (this.isAuthenticated) {
+      const user = this.authService.getUser();
+      this.userRole = user ? user.role : null;
+    } else {
+      this.userRole = null;
     }
   }
 

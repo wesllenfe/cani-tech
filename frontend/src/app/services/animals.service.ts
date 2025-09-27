@@ -19,6 +19,14 @@ interface ApiResponse<T> {
   data: T;
 }
 
+interface PaginatedResponse<T> {
+  current_page: number;
+  data: T[];
+  total: number;
+  per_page: number;
+  last_page: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AnimalsService {
   private base = 'http://localhost:8000/api';
@@ -39,8 +47,8 @@ export class AnimalsService {
     let httpParams = new HttpParams();
     if (params?.q) httpParams = httpParams.set('q', params.q);
     if (params?.page) httpParams = httpParams.set('page', params.page.toString());
-    return this.http.get<ApiResponse<Animal[]>>(`${this.base}/animals`, { params: httpParams })
-      .pipe(map(response => response.data));
+    return this.http.get<ApiResponse<PaginatedResponse<Animal>>>(`${this.base}/animals`, { params: httpParams })
+      .pipe(map(response => response.data.data));
   }
 
   getAvailableAnimals(): Observable<Animal[]> {

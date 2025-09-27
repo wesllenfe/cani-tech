@@ -1,15 +1,13 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, Router, ActivatedRouteSnapshot } from '@angular/router';
-import { User } from '../services/auth.service';
+import { CanActivate, Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
-export class RoleGuard implements CanActivate {
+export class AuthGuard implements CanActivate {
   constructor(private router: Router) {}
 
-  canActivate(route: ActivatedRouteSnapshot): boolean {
-    const requiredRoles = route.data['roles'] as string[];
+  canActivate(): boolean {
     const token = localStorage.getItem('ct_token');
     const userStr = localStorage.getItem('ct_user');
 
@@ -22,9 +20,10 @@ export class RoleGuard implements CanActivate {
       return false;
     }
 
-    let user: User;
     try {
-      user = JSON.parse(userStr) as User;
+      // Verifica se os dados do usuário são válidos
+      JSON.parse(userStr);
+      return true;
     } catch (error) {
       // Se os dados do usuário estão corrompidos, limpa tudo
       localStorage.removeItem('ct_token');
@@ -32,14 +31,5 @@ export class RoleGuard implements CanActivate {
       this.router.navigate(['/login']);
       return false;
     }
-
-    // Verifica se o usuário tem permissão para acessar a rota
-    if (!requiredRoles || requiredRoles.includes(user.role)) {
-      return true;
-    }
-
-    // Se não tem permissão, redireciona para home
-    this.router.navigate(['/']);
-    return false;
   }
 }

@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AdaptiveAnimalsService } from '../../services/adaptive-animals.service';
+import { AdaptiveAuthService } from '../../services/adaptive-auth.service';
 import { AnimalCardComponent } from '../../components/animal-card/animal-card';
 import { HeaderComponent } from '../../components/header/header.component';
 import { catchError, of } from 'rxjs';
@@ -15,6 +16,7 @@ import { catchError, of } from 'rxjs';
 })
 export class HomeComponent implements OnInit {
   private svc = inject(AdaptiveAnimalsService);
+  private authService = inject(AdaptiveAuthService);
   protected router = inject(Router);
 
   animals: any[] = [];
@@ -69,6 +71,6 @@ export class HomeComponent implements OnInit {
   }
 
   get isAuthenticated(): boolean {
-    return !!localStorage.getItem('ct_token');
+    return this.authService.isAuthenticated();
   }
 }

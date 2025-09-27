@@ -87,11 +87,29 @@ export class AuthService {
 
   getUser() {
     const u = localStorage.getItem('ct_user');
-    return u ? JSON.parse(u) : null;
+    try {
+      return u ? JSON.parse(u) : null;
+    } catch (error) {
+      // Se os dados estão corrompidos, limpa tudo
+      localStorage.removeItem('ct_user');
+      localStorage.removeItem('ct_token');
+      return null;
+    }
   }
 
   isAuthenticated() {
-    return !!this.getToken();
+    const token = this.getToken();
+    const user = this.getUser();
+
+    // Verifica se tem token E dados válidos do usuário
+    if (!token || !user) {
+      // Se algo está faltando, limpa tudo
+      localStorage.removeItem('ct_token');
+      localStorage.removeItem('ct_user');
+      return false;
+    }
+
+    return true;
   }
 
   getProfile() {

@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 
+import { AuthGuard } from './guards/auth.guard';
 import { RoleGuard } from './guards/role.guard';
 
 export const routes: Routes = [
@@ -15,7 +16,7 @@ export const routes: Routes = [
   },
   {
     path: 'animals/:id',
-    loadComponent: () => 
+    loadComponent: () =>
       import('./components/animal-detail/animal-detail').then(m => m.AnimalDetailComponent),
   },
   {
@@ -30,22 +31,19 @@ export const routes: Routes = [
   },
   {
     path: 'dashboard',
-    canActivate: [RoleGuard],
-    data: { roles: ['admin', 'caregiver', 'adopter'] },
+    canActivate: [AuthGuard],
     loadComponent: () =>
       import('./pages/dashboard/dashboard').then(m => m.DashboardComponent),
   },
   {
     path: 'perfil',
-    canActivate: [RoleGuard],
-    data: { roles: ['admin', 'caregiver', 'adopter'] },
+    canActivate: [AuthGuard],
     loadComponent: () =>
       import('./pages/perfil/perfil').then(m => m.PerfilComponent),
   },
   {
     path: 'my-adoptions',
-    canActivate: [RoleGuard],
-    data: { roles: ['admin', 'caregiver', 'adopter'] },
+    canActivate: [AuthGuard],
     loadComponent: () =>
       import('./pages/my-adoptions/my-adoptions').then(m => m.MyAdoptionsComponent),
   },
