@@ -5,7 +5,10 @@ use App\Http\Controllers\Api\AnimalController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ExpenseController;
 use App\Http\Controllers\Api\DonationController;
+use App\Http\Controllers\Api\StatusController;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/status', StatusController::class);
 
 // publicas
 Route::post('/register', [UserController::class, 'register']);
