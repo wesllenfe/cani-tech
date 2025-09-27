@@ -17,10 +17,6 @@ class AnimalController extends Controller
     {
         $query = Animal::query();
 
-        if (auth()->user()->role === 'adopter') {
-            $query->available();
-        }
-
         if ($request->has('status') && in_array(auth()->user()->role, ['admin', 'caregiver'])) {
             $query->where('status', $request->status);
         }
