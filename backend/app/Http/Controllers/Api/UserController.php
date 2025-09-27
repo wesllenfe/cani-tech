@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateAdminUserRequest;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\UpdateUserRequest;
@@ -113,5 +114,25 @@ class UserController extends Controller
         $users = User::paginate(15);
 
         return response()->json($users);
+    }
+
+    /**
+     * Criar novo usuário com privilégios (apenas admin)
+     */
+    public function createAdmin(CreateAdminUserRequest $request): JsonResponse
+    {
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'cpf' => $request->cpf,
+            'birth_date' => $request->birth_date,
+            'password' => Hash::make($request->password),
+            'role' => $request->role,
+        ]);
+
+        return response()->json([
+            'message' => 'Usuário criado com sucesso!',
+            'user' => $user,
+        ], 201);
     }
 }
