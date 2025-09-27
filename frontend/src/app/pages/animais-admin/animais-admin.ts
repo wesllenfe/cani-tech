@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { AdaptiveAnimalsService } from '../../services/adaptive-animals.service';
 import { AnimalCardComponent } from '../../components/animal-card/animal-card';
 import { HeaderComponent } from '../../components/header/header.component';
+import { Animal } from '../../models/animal.model';
 import { debounceTime, distinctUntilChanged, switchMap, startWith, catchError, of } from 'rxjs';
 
 @Component({
@@ -21,7 +22,7 @@ export class AnimaisAdminComponent implements OnInit {
   qCtrl = new FormControl('');
   statusCtrl = new FormControl('');
 
-  animals: any[] = [];
+  animals: Animal[] = [];
   loading = false;
   error: string | null = null;
 
@@ -75,11 +76,11 @@ export class AnimaisAdminComponent implements OnInit {
     this.router.navigate(['/criar-animal']);
   }
 
-  editarAnimal(animal: any) {
+  editarAnimal(animal: Animal) {
     this.router.navigate(['/editar-animal', animal.id]);
   }
 
-  verDetalhes(animal: any) {
+  verDetalhes(animal: Animal) {
     this.router.navigate(['/animals', animal.id]);
   }
 
