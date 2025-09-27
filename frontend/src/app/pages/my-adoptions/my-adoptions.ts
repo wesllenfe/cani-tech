@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-import { AdoptionService, AdoptionRequest } from '../../services/adoption.service';
+import { AdoptionService, AdoptionRequest, AdoptedAnimal } from '../../services/adoption.service';
 import { HeaderComponent } from '../../components/header/header.component';
 import { catchError, of } from 'rxjs';
 
@@ -13,13 +13,13 @@ import { catchError, of } from 'rxjs';
     <div class="my-adoptions-page">
       <!-- Header -->
       <app-header></app-header>
-      
+
       <div class="page-content">
         <div class="page-header">
           <div class="header-content">
             <div class="header-info">
-              <h1 class="page-title">Minhas Solicitações de Adoção</h1>
-              <p class="page-subtitle">Acompanhe o status das suas solicitações de adoção</p>
+              <h1 class="page-title">Meus Animais Adotados</h1>
+              <p class="page-subtitle">Conheça os animais que você adotou</p>
             </div>
             <button class="btn btn-secondary" (click)="goToDashboard()">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -54,8 +54,8 @@ import { catchError, of } from 'rxjs';
           <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
           </svg>
-          <h3>Nenhuma solicitação ainda</h3>
-          <p>Você ainda não fez nenhuma solicitação de adoção.</p>
+          <h3>Nenhum animal adotado ainda</h3>
+          <p>Você ainda não adotou nenhum animal.</p>
           <button class="btn btn-primary" (click)="goToDashboard()">
             Ver animais disponíveis
           </button>
@@ -64,7 +64,7 @@ import { catchError, of } from 'rxjs';
         <!-- Lista de solicitações -->
         <div *ngIf="adoptions.length > 0" class="adoptions-list">
           <div class="list-header">
-            <h2>{{ adoptions.length }} {{ adoptions.length === 1 ? 'solicitação' : 'solicitações' }}</h2>
+            <h2>{{ adoptions.length }} {{ adoptions.length === 1 ? 'animal adotado' : 'animais adotados' }}</h2>
             <div class="filters">
               <button
                 class="filter-btn"
@@ -75,17 +75,10 @@ import { catchError, of } from 'rxjs';
               </button>
               <button
                 class="filter-btn"
-                [class.active]="statusFilter === 'pending'"
-                (click)="setStatusFilter('pending')"
+                [class.active]="statusFilter === 'adopted'"
+                (click)="setStatusFilter('adopted')"
               >
-                Pendentes
-              </button>
-              <button
-                class="filter-btn"
-                [class.active]="statusFilter === 'approved'"
-                (click)="setStatusFilter('approved')"
-              >
-                Aprovadas
+                Adotados
               </button>
             </div>
           </div>
@@ -94,18 +87,18 @@ import { catchError, of } from 'rxjs';
             <article
               *ngFor="let adoption of filteredAdoptions"
               class="adoption-card"
-              (click)="viewAnimal(adoption.animal.id)"
+              (click)="viewAnimal(adoption.id)"
             >
               <div class="card-header">
                 <img
-                  [src]="adoption.animal.photo_url || '/assets/placeholder-animal.jpg'"
-                  [alt]="adoption.animal.name"
+                  [src]="adoption.photo_url || '/assets/placeholder-animal.jpg'"
+                  [alt]="adoption.name"
                   class="animal-photo"
                   (error)="$event.target.src='/assets/placeholder-animal.jpg'"
                 >
                 <div class="animal-info">
-                  <h3 class="animal-name">{{ adoption.animal.name }}</h3>
-                  <p class="animal-breed" *ngIf="adoption.animal.breed">{{ adoption.animal.breed }}</p>
+                  <h3 class="animal-name">{{ adoption.name }}</h3>
+                  <p class="animal-breed" *ngIf="adoption.breed">{{ adoption.breed }}</p>
                   <div class="status-badge" [class]="getStatusClass(adoption.status)">
                     {{ getStatusText(adoption.status) }}
                   </div>
@@ -115,27 +108,31 @@ import { catchError, of } from 'rxjs';
               <div class="card-content">
                 <div class="request-info">
                   <div class="info-row">
-                    <span class="label">Solicitação enviada:</span>
-                    <span class="value">{{ formatDate(adoption.created_at) }}</span>
+                    <span class="label">Adotado em:</span>
+                    <span class="value">{{ formatDate(adoption.adopted_at || adoption.created_at) }}</span>
                   </div>
-                  <div class="info-row" *ngIf="adoption.updated_at !== adoption.created_at">
-                    <span class="label">Última atualização:</span>
-                    <span class="value">{{ formatDate(adoption.updated_at) }}</span>
+                  <div class="info-row">
+                    <span class="label">Idade:</span>
+                    <span class="value">{{ adoption.age_months }} meses</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="label">Peso:</span>
+                    <span class="value">{{ adoption.weight }}kg</span>
                   </div>
                 </div>
 
-                <div class="message" *ngIf="adoption.message">
-                  <h4>Sua mensagem:</h4>
-                  <p>{{ adoption.message }}</p>
+                <div class="message" *ngIf="adoption.description">
+                  <h4>Sobre {{ adoption.name }}:</h4>
+                  <p>{{ adoption.description }}</p>
                 </div>
               </div>
 
               <div class="card-actions">
-                <button class="btn btn-secondary btn-sm" (click)="viewAnimal(adoption.animal.id); $event.stopPropagation()">
-                  Ver animal
+                <button class="btn btn-secondary btn-sm" (click)="viewAnimal(adoption.id); $event.stopPropagation()">
+                  Ver detalhes
                 </button>
                 <button
-                  *ngIf="adoption.status === 'approved'"
+                  *ngIf="adoption.status === 'adopted'"
                   class="btn btn-primary btn-sm"
                   (click)="contactShelter(); $event.stopPropagation()"
                 >
@@ -355,19 +352,29 @@ import { catchError, of } from 'rxjs';
       font-size: 0.8rem;
       font-weight: 600;
 
-      &.status-pending {
-        background: rgba(245, 158, 11, 0.1);
-        color: #d97706;
-      }
-
-      &.status-approved {
+      &.status-adopted {
         background: rgba(16, 185, 129, 0.1);
         color: #059669;
       }
 
-      &.status-rejected {
+      &.status-available {
+        background: rgba(59, 130, 246, 0.1);
+        color: #2563eb;
+      }
+
+      &.status-treatment {
+        background: rgba(245, 158, 11, 0.1);
+        color: #d97706;
+      }
+
+      &.status-unavailable {
         background: rgba(239, 68, 68, 0.1);
         color: #dc2626;
+      }
+
+      &.status-default {
+        background: rgba(156, 163, 175, 0.1);
+        color: #374151;
       }
     }
 
@@ -489,16 +496,16 @@ export class MyAdoptionsComponent implements OnInit {
   private adoptionService = inject(AdoptionService);
   private router = inject(Router);
 
-  adoptions: AdoptionRequest[] = [];
+  adoptions: AdoptedAnimal[] = [];
   loading = true;
   error: string | null = null;
-  statusFilter: 'all' | 'pending' | 'approved' | 'rejected' = 'all';
+  statusFilter: 'all' | 'adopted' | 'available' = 'all';
 
   ngOnInit() {
     this.loadAdoptions();
   }
 
-  get filteredAdoptions(): AdoptionRequest[] {
+  get filteredAdoptions(): AdoptedAnimal[] {
     if (this.statusFilter === 'all') {
       return this.adoptions;
     }
@@ -509,10 +516,10 @@ export class MyAdoptionsComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    this.adoptionService.getMyAdoptions().pipe(
+    this.adoptionService.getMyAdoptedAnimals().pipe(
       catchError(err => {
         console.error('Erro ao carregar adoções:', err);
-        this.error = 'Não foi possível carregar suas solicitações de adoção.';
+        this.error = 'Não foi possível carregar seus animais adotados.';
         this.loading = false;
         return of([]);
       })
@@ -551,11 +558,23 @@ export class MyAdoptionsComponent implements OnInit {
     });
   }
 
-  getStatusText(status: AdoptionRequest['status']): string {
-    return this.adoptionService.getStatusText(status);
+  getStatusText(status: AdoptedAnimal['status']): string {
+    const statusMap = {
+      'adopted': 'Adotado',
+      'available': 'Disponível',
+      'under_treatment': 'Em tratamento',
+      'unavailable': 'Indisponível'
+    };
+    return statusMap[status] || status;
   }
 
-  getStatusClass(status: AdoptionRequest['status']): string {
-    return this.adoptionService.getStatusClass(status);
+  getStatusClass(status: AdoptedAnimal['status']): string {
+    const classMap = {
+      'adopted': 'status-adopted',
+      'available': 'status-available',
+      'under_treatment': 'status-treatment',
+      'unavailable': 'status-unavailable'
+    };
+    return classMap[status] || 'status-default';
   }
 }

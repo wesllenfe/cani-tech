@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 export interface AdoptionRequest {
@@ -19,8 +20,39 @@ export interface AdoptionRequest {
   };
 }
 
+export interface AdoptedAnimal {
+  id: number;
+  name: string;
+  breed: string;
+  age_months: number;
+  gender: 'male' | 'female';
+  size: 'small' | 'medium' | 'large';
+  color: string;
+  description: string;
+  status: 'available' | 'adopted' | 'under_treatment' | 'unavailable';
+  vaccinated: boolean;
+  neutered: boolean;
+  medical_notes?: string;
+  photo_url: string;
+  weight: string;
+  entry_date: string;
+  adopted_by?: {
+    id: number;
+    name: string;
+  };
+  adopted_at?: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface CreateAdoptionRequest {
   message?: string;
+}
+
+export interface ApiResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -90,7 +122,17 @@ export class AdoptionService {
       return of(this.mockAdoptions);
     }
 
-    return this.http.get<AdoptionRequest[]>(`${this.baseUrl}/my-adoptions`);
+    return this.http.get<ApiResponse<AdoptionRequest[]>>(`${this.baseUrl}/my-adoptions`)
+      .pipe(map(response => response.data));
+  }
+
+  getMyAdoptedAnimals(): Observable<AdoptedAnimal[]> {
+    if (environment.production === false) {
+      return of([]);
+    }
+
+    return this.http.get<ApiResponse<AdoptedAnimal[]>>(`${this.baseUrl}/my-adoptions`)
+      .pipe(map(response => response.data));
   }
 
   getAdoptionRequest(id: number): Observable<AdoptionRequest> {

@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Animal } from '../../models/animal.model';
 import { AdaptiveAnimalsService } from '../../services/adaptive-animals.service';
 import { AdoptionModalComponent } from '../adoption-modal/adoption-modal.component';
+import { AuthService } from '../../services/auth.service';
 import { catchError, of } from 'rxjs';
 import { Location } from '@angular/common';
 
@@ -20,6 +21,7 @@ export class AnimalDetailComponent implements OnInit {
   private location = inject(Location);
   private elementRef = inject(ElementRef);
   private animalsService = inject(AdaptiveAnimalsService);
+  private authService = inject(AuthService);
 
   animal: Animal | null = null;
   loading = true;
@@ -156,5 +158,10 @@ export class AnimalDetailComponent implements OnInit {
 
   get isMockMode() {
     return this.animalsService.isMockMode();
+  }
+
+  get canEdit(): boolean {
+    const user = this.authService.getUser();
+    return user && (user.role === 'admin' || user.role === 'caregiver');
   }
 }

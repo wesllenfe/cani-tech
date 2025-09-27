@@ -120,6 +120,7 @@
           </button>
 
           <button
+            *ngIf="canEdit"
             class="btn btn-secondary action-btn"
             (click)="onEditClick()"
           >

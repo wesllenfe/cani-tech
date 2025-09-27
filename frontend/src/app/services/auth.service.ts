@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap, catchError, throwError, map } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface User {
   id: number;
@@ -38,7 +39,7 @@ export interface RegisterRequest {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  protected baseUrl = 'http://localhost:8000/api';
+  protected baseUrl = environment.apiUrl;
 
   constructor(protected http: HttpClient, protected router: Router) {}
 

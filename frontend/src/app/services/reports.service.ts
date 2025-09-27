@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
+import { environment } from '../../environments/environment';
 import { ApiErrorHandlerService } from './api-error-handler.service';
 
 export interface FinancialReport {
@@ -29,7 +30,7 @@ export interface DateRangeFilter {
   providedIn: 'root'
 })
 export class ReportsService {
-  private baseUrl = 'http://localhost:8000/api';
+  private baseUrl = environment.apiUrl;
 
   constructor(
     private http: HttpClient,

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 import { Animal, AnimalStatus } from '../models/animal.model';
 
@@ -29,7 +30,7 @@ interface PaginatedResponse<T> {
 
 @Injectable({ providedIn: 'root' })
 export class AnimalsService {
-  private base = 'http://localhost:8000/api';
+  private base = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 

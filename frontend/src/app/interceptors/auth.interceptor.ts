@@ -13,7 +13,7 @@ export class AuthInterceptor implements HttpInterceptor {
     const token = this.auth.getToken();
 
     // Adiciona token Bearer para requisições à API (tanto localhost quanto URLs que começam com /api)
-    if (token && (req.url.startsWith('http://localhost:8000/api') || req.url.startsWith('/api') || (environment.apiUrl && req.url.startsWith(environment.apiUrl)))) {
+    if (token && (req.url.startsWith('https://cani-tech.onrender.com/api') || req.url.startsWith('http://localhost:8000/api') || req.url.startsWith('/api') || (environment.apiUrl && req.url.startsWith(environment.apiUrl)))) {
       const cloned = req.clone({
         setHeaders: {
           Authorization: `Bearer ${token}`,
