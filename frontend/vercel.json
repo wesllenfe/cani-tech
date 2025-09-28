@@ -1,7 +1,7 @@
 {
   "version": 2,
   "buildCommand": "npm run build:prod",
-  "outputDirectory": "dist",
+  "outputDirectory": "dist/browser",
   "routes": [
     {
       "src": "/assets/(.*)",
