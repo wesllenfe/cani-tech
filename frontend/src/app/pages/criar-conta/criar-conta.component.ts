@@ -15,11 +15,11 @@ import { NotificationService } from '../../services/notification.service';
     <div class="create-account-container">
       <div class="create-account-card">
         <h2 class="text-center mb-4">Criar Conta</h2>
-        
+
         <!-- Botão de teste temporário -->
         <div class="mb-3 text-center">
-          <button 
-            type="button" 
+          <button
+            type="button"
             class="btn btn-outline-info btn-sm"
             (click)="testNotifications()"
           >
@@ -34,8 +34,7 @@ import { NotificationService } from '../../services/notification.service';
             formId="create-account"
             [control]="createAccountForm.get('name')"
             fieldName="Nome"
-            [required]="true"
-            formControlName="name">
+            [required]="true">
           </app-form-field>
 
           <app-form-field
@@ -45,8 +44,7 @@ import { NotificationService } from '../../services/notification.service';
             formId="create-account"
             [control]="createAccountForm.get('email')"
             fieldName="Email"
-            [required]="true"
-            formControlName="email">
+            [required]="true">
           </app-form-field>
 
           <app-form-field
@@ -55,8 +53,7 @@ import { NotificationService } from '../../services/notification.service';
             formId="create-account"
             [control]="createAccountForm.get('cpf')"
             fieldName="CPF"
-            [required]="true"
-            formControlName="cpf">
+            [required]="true">
           </app-form-field>
 
           <app-form-field
@@ -65,8 +62,7 @@ import { NotificationService } from '../../services/notification.service';
             formId="create-account"
             [control]="createAccountForm.get('birth_date')"
             fieldName="Data de nascimento"
-            [required]="true"
-            formControlName="birth_date">
+            [required]="true">
           </app-form-field>
 
           <app-form-field
@@ -76,8 +72,7 @@ import { NotificationService } from '../../services/notification.service';
             formId="create-account"
             [control]="createAccountForm.get('password')"
             fieldName="Senha"
-            [required]="true"
-            formControlName="password">
+            [required]="true">
           </app-form-field>
 
           <app-form-field
@@ -87,8 +82,7 @@ import { NotificationService } from '../../services/notification.service';
             formId="create-account"
             [control]="createAccountForm.get('password_confirmation')"
             fieldName="Confirmação de senha"
-            [required]="true"
-            formControlName="password_confirmation">
+            [required]="true">
           </app-form-field>
 
           <div class="d-grid gap-2 mt-4">

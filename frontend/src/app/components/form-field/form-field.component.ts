@@ -1,19 +1,12 @@
-import { Component, Input, inject, forwardRef } from '@angular/core';
+import { Component, Input, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR, AbstractControl } from '@angular/forms';
+import { ReactiveFormsModule, AbstractControl } from '@angular/forms';
 import { FormValidationService } from '../../services/form-validation.service';
 
 @Component({
   selector: 'app-form-field',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => FormFieldComponent),
-      multi: true
-    }
-  ],
   template: `
     <div class="form-group">
       <label [for]="fieldId" class="form-label">
@@ -23,39 +16,62 @@ import { FormValidationService } from '../../services/form-validation.service';
         }
       </label>
 
-      @if (type === 'textarea') {
-        <textarea
-          [id]="fieldId"
-          [placeholder]="placeholder"
-          [class]="getInputClasses()"
-          [value]="value"
-          (input)="onInput($event)"
-          (blur)="onTouched()"
-          [rows]="rows"
-        ></textarea>
-      } @else if (type === 'select') {
-        <select
-          [id]="fieldId"
-          [class]="getInputClasses()"
-          [value]="value"
-          (change)="onInput($event)"
-          (blur)="onTouched()"
-        >
-          <option value="">{{ placeholder || 'Selecione...' }}</option>
-          @for (option of options; track option.value) {
-            <option [value]="option.value">{{ option.label }}</option>
-          }
-        </select>
+      @if (control) {
+        @if (type === 'textarea') {
+          <textarea
+            [id]="fieldId"
+            [placeholder]="placeholder"
+            [class]="getInputClasses()"
+            [formControl]="$any(control)"
+            [rows]="rows"
+          ></textarea>
+        } @else if (type === 'select') {
+          <select
+            [id]="fieldId"
+            [class]="getInputClasses()"
+            [formControl]="$any(control)"
+          >
+            <option value="">{{ placeholder || 'Selecione...' }}</option>
+            @for (option of options; track option.value) {
+              <option [value]="option.value">{{ option.label }}</option>
+            }
+          </select>
+        } @else {
+          <input
+            [id]="fieldId"
+            [type]="type"
+            [placeholder]="placeholder"
+            [class]="getInputClasses()"
+            [formControl]="$any(control)"
+          />
+        }
       } @else {
-        <input
-          [id]="fieldId"
-          [type]="type"
-          [placeholder]="placeholder"
-          [class]="getInputClasses()"
-          [value]="value"
-          (input)="onInput($event)"
-          (blur)="onTouched()"
-        />
+        <!-- Fallback quando control é null -->
+        @if (type === 'textarea') {
+          <textarea
+            [id]="fieldId"
+            [placeholder]="placeholder"
+            [class]="getInputClasses()"
+            [rows]="rows"
+            disabled
+          ></textarea>
+        } @else if (type === 'select') {
+          <select
+            [id]="fieldId"
+            [class]="getInputClasses()"
+            disabled
+          >
+            <option value="">{{ placeholder || 'Selecione...' }}</option>
+          </select>
+        } @else {
+          <input
+            [id]="fieldId"
+            [type]="type"
+            [placeholder]="placeholder"
+            [class]="getInputClasses()"
+            disabled
+          />
+        }
       }
 
       @if (shouldShowError()) {
@@ -128,7 +144,7 @@ import { FormValidationService } from '../../services/form-validation.service';
     }
   `]
 })
-export class FormFieldComponent implements ControlValueAccessor {
+export class FormFieldComponent implements OnInit {
   @Input() label: string = '';
   @Input() placeholder: string = '';
   @Input() type: string = 'text';
@@ -141,32 +157,10 @@ export class FormFieldComponent implements ControlValueAccessor {
 
   protected formValidationService = inject(FormValidationService);
 
-  value: string = '';
   fieldId: string = '';
-
-  private onChange = (value: string) => {};
-  onTouched = () => {};
 
   ngOnInit() {
     this.fieldId = `field-${Math.random().toString(36).substr(2, 9)}`;
-  }
-
-  writeValue(value: string): void {
-    this.value = value || '';
-  }
-
-  registerOnChange(fn: (value: string) => void): void {
-    this.onChange = fn;
-  }
-
-  registerOnTouched(fn: () => void): void {
-    this.onTouched = fn;
-  }
-
-  onInput(event: any): void {
-    const value = event.target.value;
-    this.value = value;
-    this.onChange(value);
   }
 
   shouldShowError(): boolean {

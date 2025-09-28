@@ -2,9 +2,17 @@
 
 .dash-shell {
   min-height: 100vh;
-  padding: clamp(20px, 4vw, 36px);
+  padding: 0 0 clamp(20px, 4vw, 36px);
   background: var(--c-bg);
   font-family: var(--font-sans);
+
+  app-header {
+    width: 100%;
+  }
+
+  .dash-content {
+    padding: 24px clamp(20px, 4vw, 36px) clamp(20px, 4vw, 36px);
+  }
 
   .dash-frame {
     max-width: 1320px;
@@ -170,7 +178,7 @@
 
       .api-error {
         color: #dc3545;
-        
+
         i {
           color: #dc3545;
         }

@@ -15,11 +15,13 @@ import { finalize } from 'rxjs/operators';
 export class CriarAnimalComponent implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private svc = inject(AdaptiveAnimalsService);
 
   loading = false;
   apiError: string | null = null;
   isEditing = false;
+  formSubmitted = false;
 
   form = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(2)]],
@@ -61,8 +63,7 @@ export class CriarAnimalComponent implements OnInit {
     const today = new Date().toISOString().split('T')[0];
     this.form.patchValue({ entry_date: today });
 
-    const route = inject(ActivatedRoute);
-    const animalId = route.snapshot.paramMap.get('id');
+    const animalId = this.route.snapshot.paramMap.get('id');
     if (animalId) {
       console.log('📝 Modo edição - ID:', animalId);
       this.isEditing = true;
@@ -74,6 +75,7 @@ export class CriarAnimalComponent implements OnInit {
 
   submit(): void {
     this.apiError = null;
+    this.formSubmitted = true;
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -83,8 +85,7 @@ export class CriarAnimalComponent implements OnInit {
     this.loading = true;
 
     const formData = this.form.value;
-    const route = inject(ActivatedRoute);
-    const animalId = route.snapshot.paramMap.get('id');
+    const animalId = this.route.snapshot.paramMap.get('id');
 
     const request = animalId
       ? this.svc.updateAnimal(+animalId, formData as any)
@@ -146,5 +147,37 @@ export class CriarAnimalComponent implements OnInit {
         this.apiError = 'Erro ao carregar dados do animal';
       }
     });
+  }
+
+  shouldShowFieldError(fieldName: string): boolean {
+    const field = this.form.get(fieldName);
+    return !!(this.formSubmitted && field && field.invalid);
+  }
+
+  getFieldError(fieldName: string): string {
+    const field = this.form.get(fieldName);
+    if (!field || !field.errors) return '';
+
+    if (field.errors['required']) return `${this.getFieldLabel(fieldName)} é obrigatório`;
+    if (field.errors['minlength']) return `${this.getFieldLabel(fieldName)} deve ter pelo menos ${field.errors['minlength'].requiredLength} caracteres`;
+    if (field.errors['min']) return `${this.getFieldLabel(fieldName)} deve ser maior que ${field.errors['min'].min}`;
+    if (field.errors['max']) return `${this.getFieldLabel(fieldName)} deve ser menor que ${field.errors['max'].max}`;
+
+    return `${this.getFieldLabel(fieldName)} é inválido`;
+  }
+
+  private getFieldLabel(fieldName: string): string {
+    const labels: { [key: string]: string } = {
+      'name': 'Nome',
+      'breed': 'Raça',
+      'age_months': 'Idade',
+      'gender': 'Gênero',
+      'size': 'Porte',
+      'color': 'Cor',
+      'description': 'Descrição',
+      'weight': 'Peso',
+      'entry_date': 'Data de entrada'
+    };
+    return labels[fieldName] || fieldName;
   }
 }

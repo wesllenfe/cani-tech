@@ -27,15 +27,12 @@
                 id="name"
                 type="text"
                 formControlName="name"
-                class="input"
+                [class]="shouldShowFieldError('name') ? 'input error' : 'input'"
                 placeholder="Digite o nome do animal"
               />
-              <div class="error" *ngIf="showError('name', 'required')">
-                Nome é obrigatório
-              </div>
-              <div class="error" *ngIf="showError('name', 'minlength')">
-                Nome deve ter pelo menos 2 caracteres
-              </div>
+              <span class="field-error" *ngIf="shouldShowFieldError('name')">
+                {{ getFieldError('name') }}
+              </span>
             </div>
 
             <div class="field">
@@ -215,9 +212,9 @@
             <button type="button" class="btn btn-secondary" (click)="goBack()">
               Cancelar
             </button>
-            <button 
-              type="submit" 
-              class="btn btn-primary" 
+            <button
+              type="submit"
+              class="btn btn-primary"
               [disabled]="form.invalid || loading"
             >
               <i class="fas fa-save" *ngIf="!loading"></i>
