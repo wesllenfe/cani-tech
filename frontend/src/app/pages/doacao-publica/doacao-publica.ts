@@ -4,12 +4,9 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
-
-export interface Category {
-  id: number;
-  name: string;
-  type: 'expense' | 'donation';
-}
+import { CategoriesService } from '../../services/categories.service';
+import { DonationsService } from '../../services/donations.service';
+import { Category } from '../../models/category.model';
 
 @Component({
   selector: 'app-doacao-publica',
@@ -22,6 +19,8 @@ export class DoacaoPublicaComponent implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private http = inject(HttpClient);
+  private categoriesService = inject(CategoriesService);
+  private donationsService = inject(DonationsService);
 
   categories: Category[] = [];
   loading = false;
@@ -47,11 +46,11 @@ export class DoacaoPublicaComponent implements OnInit {
 
   private loadCategories() {
     this.loading = true;
-    this.http.get<{success: boolean, data: Category[]}>('/api/categories').pipe(
+    this.categoriesService.getCategories().pipe(
       finalize(() => this.loading = false)
     ).subscribe({
-      next: (response) => {
-        this.categories = response.data.filter(cat => cat.type === 'donation');
+      next: (categories) => {
+        this.categories = categories.filter(cat => cat.type === 'donation');
       },
       error: (err) => {
         console.error('Erro ao carregar categorias:', err);
@@ -71,7 +70,7 @@ export class DoacaoPublicaComponent implements OnInit {
 
     this.submitting = true;
 
-    this.http.post('/api/donations', this.form.value).pipe(
+    this.donationsService.createPublicDonation(this.form.value as any).pipe(
       finalize(() => this.submitting = false)
     ).subscribe({
       next: (response) => {

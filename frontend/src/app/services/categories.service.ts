@@ -1,8 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Category } from '../models/category.model';
+
+interface CategoriesResponse {
+  data: Category[];
+}
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +17,9 @@ export class CategoriesService {
   constructor(private http: HttpClient) {}
 
   getCategories(): Observable<Category[]> {
-    return this.http.get<Category[]>(`${this.baseUrl}/categories`);
+    return this.http.get<CategoriesResponse>(`${this.baseUrl}/categories`).pipe(
+      map(response => response.data)
+    );
   }
 
   getCategory(id: number): Observable<Category> {

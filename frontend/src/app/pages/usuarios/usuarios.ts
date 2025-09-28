@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
+import { UsersService } from '../../services/users.service';
 
 export interface User {
   id: number;
@@ -28,6 +29,7 @@ export class UsuariosComponent implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private http = inject(HttpClient);
+  private usersService = inject(UsersService);
 
   users: User[] = [];
   loading = false;
@@ -57,13 +59,13 @@ export class UsuariosComponent implements OnInit {
 
   private loadUsers() {
     this.loading = true;
-    this.http.get<User[]>('/api/users').pipe(
+    this.usersService.getUsers().pipe(
       finalize(() => this.loading = false)
     ).subscribe({
-      next: (users) => {
+      next: (users: User[]) => {
         this.users = users;
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Erro ao carregar usuários:', err);
         this.error = 'Erro ao carregar usuários';
       }
@@ -98,25 +100,45 @@ export class UsuariosComponent implements OnInit {
     }
 
     this.loading = true;
-    const formData = this.form.value;
 
-    const request = this.editingUser
-      ? this.http.put(`/api/users/${this.editingUser.id}`, formData)
-      : this.http.post('/api/admin/create-user', formData);
+    if (this.editingUser) {
+      const payload: Partial<User> = {};
+      const formValue = this.form.value;
 
-    request.pipe(
-      finalize(() => this.loading = false)
-    ).subscribe({
-      next: (response) => {
-        this.loadUsers();
-        this.toggleForm();
-      },
-      error: (err) => {
-        console.error('Erro ao salvar usuário:', err);
-        this.error = 'Erro ao salvar usuário';
-      }
-    });
+      if (formValue.name) payload.name = formValue.name;
+      if (formValue.email) payload.email = formValue.email;
+      if (formValue.cpf) payload.cpf = formValue.cpf;
+      if (formValue.birth_date) payload.birth_date = formValue.birth_date;
+      if (formValue.role) payload.role = formValue.role as any;
+
+      this.usersService.updateUser(this.editingUser.id, payload).pipe(
+        finalize(() => this.loading = false)
+      ).subscribe({
+        next: () => {
+          this.loadUsers();
+          this.toggleForm();
+        },
+        error: (err: any) => {
+          console.error('Erro ao atualizar usuário:', err);
+          this.error = 'Erro ao atualizar usuário';
+        }
+      });
+    } else {
+      this.usersService.createAdminUser(this.form.value as any).pipe(
+        finalize(() => this.loading = false)
+      ).subscribe({
+        next: () => {
+          this.loadUsers();
+          this.toggleForm();
+        },
+        error: (err: any) => {
+          console.error('Erro ao criar usuário:', err);
+          this.error = 'Erro ao criar usuário';
+        }
+      });
+    }
   }
+
 
   deleteUser(user: User) {
     if (!confirm(`Tem certeza que deseja excluir o usuário "${user.name}"?`)) {
@@ -124,13 +146,13 @@ export class UsuariosComponent implements OnInit {
     }
 
     this.loading = true;
-    this.http.delete(`/api/users/${user.id}`).pipe(
+    this.usersService.deleteUser(user.id).pipe(
       finalize(() => this.loading = false)
     ).subscribe({
       next: () => {
         this.loadUsers();
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Erro ao excluir usuário:', err);
         this.error = 'Erro ao excluir usuário';
       }

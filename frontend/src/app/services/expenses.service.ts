@@ -1,8 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Expense } from '../models/expense.model';
+
+interface ExpensesResponse {
+  data: Expense[];
+}
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +17,9 @@ export class ExpensesService {
   constructor(private http: HttpClient) {}
 
   getExpenses(): Observable<Expense[]> {
-    return this.http.get<Expense[]>(`${this.baseUrl}/expenses`);
+    return this.http.get<ExpensesResponse>(`${this.baseUrl}/expenses`).pipe(
+      map(response => response.data)
+    );
   }
 
   getExpense(id: number): Observable<Expense> {

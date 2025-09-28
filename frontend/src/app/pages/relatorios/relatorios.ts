@@ -5,6 +5,9 @@ import { HttpClient } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
 import { NotificationService } from '../../services/notification.service';
+import { DonationsService } from '../../services/donations.service';
+import { ExpensesService } from '../../services/expenses.service';
+import { CategoriesService } from '../../services/categories.service';
 
 export interface FinancialSummary {
   totalDonations: number;
@@ -37,6 +40,9 @@ export class RelatoriosComponent implements OnInit {
   private router = inject(Router);
   private http = inject(HttpClient);
   private notificationService = inject(NotificationService);
+  private donationsService = inject(DonationsService);
+  private expensesService = inject(ExpensesService);
+  private categoriesService = inject(CategoriesService);
 
   loading = false;
   error: string | null = null;
@@ -57,14 +63,14 @@ export class RelatoriosComponent implements OnInit {
     this.error = null;
 
     forkJoin({
-      donations: this.http.get<{success: boolean, data: any[]}>('/api/donations'),
-      expenses: this.http.get<{success: boolean, data: any[]}>('/api/expenses'),
-      categories: this.http.get<{success: boolean, data: any[]}>('/api/categories')
+      donations: this.donationsService.getDonations(),
+      expenses: this.expensesService.getExpenses(),
+      categories: this.categoriesService.getCategories()
     }).pipe(
       finalize(() => this.loading = false)
     ).subscribe({
       next: (data) => {
-        this.processFinancialData(data.donations.data, data.expenses.data, data.categories.data);
+        this.processFinancialData(data.donations, data.expenses, data.categories);
       },
       error: (err) => {
         console.error('Erro ao carregar relatórios:', err);

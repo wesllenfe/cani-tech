@@ -4,15 +4,8 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
-
-export interface Category {
-  id: number;
-  name: string;
-  description: string;
-  type: 'expense' | 'donation';
-  created_at: string;
-  updated_at: string;
-}
+import { CategoriesService } from '../../services/categories.service';
+import { Category } from '../../models/category.model';
 
 @Component({
   selector: 'app-categorias',
@@ -25,6 +18,7 @@ export class CategoriasComponent implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private http = inject(HttpClient);
+  private categoriesService = inject(CategoriesService);
 
   categories: Category[] = [];
   loading = false;
@@ -49,11 +43,11 @@ export class CategoriasComponent implements OnInit {
 
   private loadCategories() {
     this.loading = true;
-    this.http.get<{success: boolean, data: Category[]}>('/api/categories').pipe(
+    this.categoriesService.getCategories().pipe(
       finalize(() => this.loading = false)
     ).subscribe({
-      next: (response) => {
-        this.categories = response.data;
+      next: (categories) => {
+        this.categories = categories;
       },
       error: (err) => {
         console.error('Erro ao carregar categorias:', err);
@@ -85,11 +79,11 @@ export class CategoriasComponent implements OnInit {
     }
 
     this.loading = true;
-    const formData = this.form.value;
+    const formData = this.form.value as any;
 
     const request = this.editingCategory
-      ? this.http.put(`/api/categories/${this.editingCategory.id}`, formData)
-      : this.http.post('/api/categories', formData);
+      ? this.categoriesService.updateCategory(this.editingCategory.id, formData)
+      : this.categoriesService.createCategory(formData);
 
     request.pipe(
       finalize(() => this.loading = false)
@@ -111,7 +105,7 @@ export class CategoriasComponent implements OnInit {
     }
 
     this.loading = true;
-    this.http.delete(`/api/categories/${category.id}`).pipe(
+    this.categoriesService.deleteCategory(category.id).pipe(
       finalize(() => this.loading = false)
     ).subscribe({
       next: () => {

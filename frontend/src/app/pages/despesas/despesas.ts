@@ -4,29 +4,10 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
-
-export interface Category {
-  id: number;
-  name: string;
-  type: 'expense' | 'donation';
-}
-
-export interface Expense {
-  id: number;
-  category_id: number;
-  title: string;
-  description: string;
-  amount: string;
-  date: string;
-  created_at: string;
-  updated_at: string;
-  category: Category;
-  user: {
-    id: number;
-    name: string;
-    email: string;
-  };
-}
+import { ExpensesService } from '../../services/expenses.service';
+import { CategoriesService } from '../../services/categories.service';
+import { Expense } from '../../models/expense.model';
+import { Category } from '../../models/category.model';
 
 @Component({
   selector: 'app-despesas',
@@ -39,6 +20,8 @@ export class DespesasComponent implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private http = inject(HttpClient);
+  private expensesService = inject(ExpensesService);
+  private categoriesService = inject(CategoriesService);
 
   expenses: Expense[] = [];
   categories: Category[] = [];
@@ -61,9 +44,9 @@ export class DespesasComponent implements OnInit {
   }
 
   private loadCategories() {
-    this.http.get<{success: boolean, data: Category[]}>('/api/categories').subscribe({
-      next: (response) => {
-        this.categories = response.data.filter(cat => cat.type === 'expense');
+    this.categoriesService.getCategories().subscribe({
+      next: (categories) => {
+        this.categories = categories.filter(cat => cat.type === 'expense');
       },
       error: (err) => {
         console.error('Erro ao carregar categorias:', err);
@@ -73,11 +56,11 @@ export class DespesasComponent implements OnInit {
 
   private loadExpenses() {
     this.loading = true;
-    this.http.get<{success: boolean, data: Expense[]}>('/api/expenses').pipe(
+    this.expensesService.getExpenses().pipe(
       finalize(() => this.loading = false)
     ).subscribe({
-      next: (response) => {
-        this.expenses = response.data;
+      next: (expenses) => {
+        this.expenses = expenses;
       },
       error: (err) => {
         console.error('Erro ao carregar despesas:', err);
@@ -100,8 +83,8 @@ export class DespesasComponent implements OnInit {
     this.form.patchValue({
       category_id: expense.category_id.toString(),
       title: expense.title,
-      description: expense.description,
-      amount: expense.amount,
+      description: expense.description || '',
+      amount: expense.amount.toString(),
       date: expense.date
     });
   }
@@ -113,11 +96,11 @@ export class DespesasComponent implements OnInit {
     }
 
     this.loading = true;
-    const formData = this.form.value;
+    const formData = this.form.value as any;
 
     const request = this.editingExpense
-      ? this.http.put(`/api/expenses/${this.editingExpense.id}`, formData)
-      : this.http.post('/api/expenses', formData);
+      ? this.expensesService.updateExpense(this.editingExpense.id, formData)
+      : this.expensesService.createExpense(formData);
 
     request.pipe(
       finalize(() => this.loading = false)
@@ -139,7 +122,7 @@ export class DespesasComponent implements OnInit {
     }
 
     this.loading = true;
-    this.http.delete(`/api/expenses/${expense.id}`).pipe(
+    this.expensesService.deleteExpense(expense.id).pipe(
       finalize(() => this.loading = false)
     ).subscribe({
       next: () => {
@@ -161,11 +144,11 @@ export class DespesasComponent implements OnInit {
     return ctrl?.hasError(error) && (ctrl.touched || this.form.touched);
   }
 
-  formatCurrency(amount: string): string {
+  formatCurrency(amount: number): string {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL'
-    }).format(parseFloat(amount));
+    }).format(amount);
   }
 
   formatDate(dateString: string): string {

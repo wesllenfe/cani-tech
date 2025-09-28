@@ -1,8 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Donation } from '../models/donation.model';
+
+interface DonationsResponse {
+  data: Donation[];
+}
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +21,9 @@ export class DonationsService {
   }
 
   getDonations(): Observable<Donation[]> {
-    return this.http.get<Donation[]>(`${this.baseUrl}/donations`);
+    return this.http.get<DonationsResponse>(`${this.baseUrl}/donations`).pipe(
+      map(response => response.data)
+    );
   }
 
   getDonation(id: number): Observable<Donation> {

@@ -4,26 +4,10 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
-
-export interface Category {
-  id: number;
-  name: string;
-  type: 'expense' | 'donation';
-}
-
-export interface Donation {
-  id: number;
-  category_id: number;
-  title: string;
-  description: string;
-  amount: string;
-  donor_name: string;
-  donor_email: string;
-  date: string;
-  created_at: string;
-  updated_at: string;
-  category: Category;
-}
+import { DonationsService } from '../../services/donations.service';
+import { CategoriesService } from '../../services/categories.service';
+import { Donation } from '../../models/donation.model';
+import { Category } from '../../models/category.model';
 
 @Component({
   selector: 'app-doacoes-admin',
@@ -36,6 +20,8 @@ export class DoacoesAdminComponent implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private http = inject(HttpClient);
+  private donationsService = inject(DonationsService);
+  private categoriesService = inject(CategoriesService);
 
   donations: Donation[] = [];
   categories: Category[] = [];
@@ -60,9 +46,9 @@ export class DoacoesAdminComponent implements OnInit {
   }
 
   private loadCategories() {
-    this.http.get<{success: boolean, data: Category[]}>('/api/categories').subscribe({
-      next: (response) => {
-        this.categories = response.data.filter(cat => cat.type === 'donation');
+    this.categoriesService.getCategories().subscribe({
+      next: (categories) => {
+        this.categories = categories.filter(cat => cat.type === 'donation');
       },
       error: (err) => {
         console.error('Erro ao carregar categorias:', err);
@@ -72,11 +58,11 @@ export class DoacoesAdminComponent implements OnInit {
 
   private loadDonations() {
     this.loading = true;
-    this.http.get<{success: boolean, data: Donation[]}>('/api/donations').pipe(
+    this.donationsService.getDonations().pipe(
       finalize(() => this.loading = false)
     ).subscribe({
-      next: (response) => {
-        this.donations = response.data;
+      next: (donations) => {
+        this.donations = donations;
       },
       error: (err) => {
         console.error('Erro ao carregar doações:', err);
@@ -99,10 +85,10 @@ export class DoacoesAdminComponent implements OnInit {
     this.form.patchValue({
       category_id: donation.category_id.toString(),
       title: donation.title,
-      description: donation.description,
-      amount: donation.amount,
+      description: donation.description || '',
+      amount: donation.amount.toString(),
       donor_name: donation.donor_name,
-      donor_email: donation.donor_email,
+      donor_email: donation.donor_email || '',
       date: donation.date
     });
   }
@@ -114,11 +100,11 @@ export class DoacoesAdminComponent implements OnInit {
     }
 
     this.loading = true;
-    const formData = this.form.value;
+    const formData = this.form.value as any;
 
     const request = this.editingDonation
-      ? this.http.put(`/api/donations/${this.editingDonation.id}`, formData)
-      : this.http.post('/api/donations', formData);
+      ? this.donationsService.updateDonation(this.editingDonation.id, formData)
+      : this.donationsService.createPublicDonation(formData);
 
     request.pipe(
       finalize(() => this.loading = false)
@@ -140,7 +126,7 @@ export class DoacoesAdminComponent implements OnInit {
     }
 
     this.loading = true;
-    this.http.delete(`/api/donations/${donation.id}`).pipe(
+    this.donationsService.deleteDonation(donation.id).pipe(
       finalize(() => this.loading = false)
     ).subscribe({
       next: () => {
@@ -162,11 +148,11 @@ export class DoacoesAdminComponent implements OnInit {
     return ctrl?.hasError(error) && (ctrl.touched || this.form.touched);
   }
 
-  formatCurrency(amount: string): string {
+  formatCurrency(amount: number): string {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL'
-    }).format(parseFloat(amount));
+    }).format(amount);
   }
 
   formatDate(dateString: string): string {
