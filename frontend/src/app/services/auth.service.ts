@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap, catchError, throwError, map } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { LoadingService } from './loading.service';
 
 export interface User {
   id: number;
@@ -40,30 +41,52 @@ export interface RegisterRequest {
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   protected baseUrl = environment.apiUrl;
+  private loadingService = inject(LoadingService);
 
   constructor(protected http: HttpClient, protected router: Router) {}
 
   login(payload: LoginRequest): Observable<AuthResponse> {
+    this.loadingService.startLoading('Fazendo login...', 'auth-login');
+
     return this.http.post<AuthResponse>(`${this.baseUrl}/login`, payload).pipe(
       tap(response => {
         localStorage.setItem('ct_token', response.token);
         localStorage.setItem('ct_user', JSON.stringify(response.user));
+        this.loadingService.stopLoading('auth-login');
+      }),
+      catchError(error => {
+        this.loadingService.stopLoading('auth-login');
+        return throwError(() => error);
       })
     );
   }
 
   register(payload: RegisterRequest): Observable<AuthResponse> {
+    this.loadingService.startLoading('Criando conta...', 'auth-register');
+
     return this.http.post<AuthResponse>(`${this.baseUrl}/register`, payload).pipe(
       tap(response => {
         localStorage.setItem('ct_token', response.token);
         localStorage.setItem('ct_user', JSON.stringify(response.user));
+        this.loadingService.stopLoading('auth-register');
+      }),
+      catchError(error => {
+        this.loadingService.stopLoading('auth-register');
+        return throwError(() => error);
       })
     );
   }
 
   getCurrentUser(): Observable<User> {
+    this.loadingService.startLoading('Carregando perfil...', 'auth-profile');
+
     return this.http.get<{ user: User }>(`${this.baseUrl}/profile`).pipe(
-      map(response => response.user)
+      map(response => response.user),
+      tap(() => this.loadingService.stopLoading('auth-profile')),
+      catchError(error => {
+        this.loadingService.stopLoading('auth-profile');
+        return throwError(() => error);
+      })
     );
   }
 
@@ -114,11 +137,27 @@ export class AuthService {
   }
 
   getProfile() {
-    return this.http.get<{user: any}>(`${this.baseUrl}/profile`);
+    this.loadingService.startLoading('Carregando dados do perfil...', 'get-profile');
+
+    return this.http.get<{user: any}>(`${this.baseUrl}/profile`).pipe(
+      tap(() => this.loadingService.stopLoading('get-profile')),
+      catchError(error => {
+        this.loadingService.stopLoading('get-profile');
+        return throwError(() => error);
+      })
+    );
   }
 
   updateUser(userId: number, userData: any) {
-    return this.http.put<{user: any}>(`${this.baseUrl}/users/${userId}`, userData);
+    this.loadingService.startLoading('Salvando alterações...', 'update-user');
+
+    return this.http.put<{user: any}>(`${this.baseUrl}/users/${userId}`, userData).pipe(
+      tap(() => this.loadingService.stopLoading('update-user')),
+      catchError(error => {
+        this.loadingService.stopLoading('update-user');
+        return throwError(() => error);
+      })
+    );
   }
 }
 

@@ -13,7 +13,6 @@ import { NotificationService, Notification } from '../../services/notification.s
         *ngFor="let notification of notifications; trackBy: trackByFn"
         class="notification"
         [class]="'notification-' + notification.type"
-        [@slideIn]
       >
         <div class="notification-content">
           <div class="notification-icon">
@@ -54,7 +53,7 @@ import { NotificationService, Notification } from '../../services/notification.s
       position: fixed;
       top: 20px;
       right: 20px;
-      z-index: 1000;
+      z-index: 10000;
       display: flex;
       flex-direction: column;
       gap: 12px;
@@ -63,14 +62,13 @@ import { NotificationService, Notification } from '../../services/notification.s
     }
 
     .notification {
-      background: var(--c-surface);
-      border-radius: var(--radius-lg);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       overflow: hidden;
       pointer-events: auto;
-      transform: translateX(100%);
-      animation: slideIn 0.3s ease-out forwards;
       border-left: 4px solid;
+      margin-bottom: 10px;
     }
 
     .notification-success {
