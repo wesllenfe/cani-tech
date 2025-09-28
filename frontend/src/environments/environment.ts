@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8000/api',
+  apiUrl: 'https://cani-tech.onrender.com/api',
   defaultAdminEmail: 'canitech@gmail.com',
   defaultAdminPassword: 'equipecao@420',
 };
