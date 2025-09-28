@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -12,7 +12,7 @@ import { finalize } from 'rxjs/operators';
   templateUrl: './criar-animal.html',
   styleUrls: ['./criar-animal.scss'],
 })
-export class CriarAnimalComponent {
+export class CriarAnimalComponent implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private svc = inject(AdaptiveAnimalsService);
@@ -57,14 +57,18 @@ export class CriarAnimalComponent {
   ];
 
   ngOnInit() {
+    console.log('🐕 CriarAnimalComponent - Iniciando...');
     const today = new Date().toISOString().split('T')[0];
     this.form.patchValue({ entry_date: today });
-    
+
     const route = inject(ActivatedRoute);
     const animalId = route.snapshot.paramMap.get('id');
     if (animalId) {
+      console.log('📝 Modo edição - ID:', animalId);
       this.isEditing = true;
       this.loadAnimalForEdit(+animalId);
+    } else {
+      console.log('✨ Modo criação - Novo animal');
     }
   }
 
@@ -81,11 +85,11 @@ export class CriarAnimalComponent {
     const formData = this.form.value;
     const route = inject(ActivatedRoute);
     const animalId = route.snapshot.paramMap.get('id');
-    
-    const request = animalId 
+
+    const request = animalId
       ? this.svc.updateAnimal(+animalId, formData as any)
       : this.svc.createAnimal(formData as any);
-    
+
     request.pipe(
       finalize(() => this.loading = false)
     ).subscribe({
