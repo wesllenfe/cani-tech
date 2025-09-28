@@ -16,9 +16,17 @@ O objetivo do sistema é fornecer uma plataforma completa para cadastro, control
 
 ---
 
+## 🌐 Deploys
+
+* **Frontend (Vercel):** [https://cani-tech.vercel.app/home](https://cani-tech.vercel.app/home)
+* **Backend (Render):** [https://cani-tech.onrender.com/](https://cani-tech.onrender.com/)
+* **Apresentação:** [Google Drive](https://drive.google.com/file/d/1syNew_JsUHqKF46Vcs9xawHXXk2Iqj-V/view?usp=drivesdk)
+
+---
+
 ## 🚀 Pré-requisitos
 
-Antes de rodar o projeto, instale as ferramentas abaixo:
+Antes de rodar o projeto localmente, instale as ferramentas abaixo:
 
 * Node.js (versão LTS recomendada)
 * Angular CLI
@@ -32,9 +40,8 @@ Antes de rodar o projeto, instale as ferramentas abaixo:
 ### Backend (API Laravel)
 
 #### Extras:
-<a href="./backend/API.md">Documentação API<a>
 
-<a href="./backend/README.md">Comandos úteis<a>
+<a href="./backend/API.md">Documentação API<a> <a href="./backend/README.md">Comandos úteis<a>
 
 ```bash
 git clone <url-do-repo>
@@ -94,6 +101,7 @@ http://localhost:4200
 
 ## 📌 Observações
 
-* O frontend estará disponível na **porta 4200**.
-* O backend estará disponível na **porta 8000**.
+* O frontend estará disponível na **porta 4200** (local) e em produção na [Vercel](https://cani-tech.vercel.app/home).
+* O backend estará disponível na **porta 8000** (local) e em produção no [Render](https://cani-tech.onrender.com/).
+* A apresentação oficial do projeto está disponível no [Google Drive](https://drive.google.com/file/d/1syNew_JsUHqKF46Vcs9xawHXXk2Iqj-V/view?usp=drivesdk).
 * O banco PostgreSQL será executado em container Docker para facilitar o setup do ambiente.
